@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Edit the book</title>
+</head>
+
+<body>
+	<h1>Modifica il Libro:</h1>
+	<!--vado al link book method post con il libro che gli passo per questo posso usare il campo Book book poi maybe-->
+	<form th:action="@{/edited/book}" method="POST"  th:object="${book}">
+		<input type="hidden" th:field="*{id}" />
+		<div>
+			Nome Libro: <span><input required type="text" th:field="${book.title}" /></span>
+		</div>
+		<div>
+			Anno di Pubblicazione: <span><input required type="number" th:field="${book.dateOfPublication}" /></span>
+		</div>
+		<!--<div>
+		        Immagini del libro: 
+		        <input type="file" name="images" multiple />
+		    </div>-->
+		<div>
+			<span><button type="submit">Salva Modifiche</button></span>
+		</div>
+	</form>
+</body>
+
+</html>

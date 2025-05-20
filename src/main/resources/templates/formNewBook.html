@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>New Book</title>
+</head>
+
+<body>
+	<h1>Aggiungi un nuovo Libro nel Sistema, da aggiungere FOTO E LISTA AUTORI SELEZIONA</h1>
+	<!--vado al link book method post con il libro che gli passo per questo posso usare il campo Book book poi maybe-->
+	<form th:action="@{/book}" method="POST" th:object="${book}">
+		<div>
+			Nome Libro: <span><input required type="text" th:field="${book.title}" /></span>
+		</div>
+		<div>
+			Anno di Pubblicazione: <span><input required type="number" th:field="${book.dateOfPublication}" /></span>
+		</div>
+		<!--<div>
+			Foto in futuro: <span><input type="url" th:field="${movie.urlImage}" /></span>
+		</div>-->
+		<div>
+			<span><button type="submit">Conferma</button></span>
+		</div>
+	</form>
+</body>
+
+</html>

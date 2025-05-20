@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	    <title>Author</title>
+<!--	<link rel="stylesheet" href="/stile.css?version=2" />-->
+</head>
+
+<body>
+	    <div th:if="${author}">
+		    <div>Nome: <span th:text="${author.name}">nome</span></div>
+		    <div>Cognome: <span th:text="${author.surname}">cognome</span></div>
+			<div>Anno di nascita: <span th:text="${author.dateOfBirth}">anno</span></div>
+			
+			<div th:if="${author.dateOfDeath != null}">
+			    <p th:text="'Data di morte: ' + ${author.dateOfDeath}"></p>
+			</div>
+			<div th:unless="${author.dateOfDeath != null}">
+			    <p>Autore vivente</p>
+			</div>
+			<div>Nazionalita: <span th:text="'(' + ${author.nationality} + ')'">anno</span></div>
+			<div>QUI CI STA LA FOTO E LA LISTA DI LIBRI DELL'AUTORE I GUESS MAGARI ANCHE UNA DESCRIZIONE O ALTRO	</div>
+			<a th:href="@{'/author/' + ${author.id} + '/books'}">Lista libri dell'autore</a>
+		       <!-- <span><img width="30%" th:src="${movie.urlImage}" /></span>-->
+	    <div th:unless="${author}">Non esiste l'autore che hai selezionato</div>
+	 
+</body>
+
+</html>

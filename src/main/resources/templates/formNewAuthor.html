@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>New Author</title>
+</head>
+
+<body>
+	<h1>Aggiungi un nuovo Autore nel Sistema, da aggiungere FOTO E LISTA LIBRI MAYBE SELEZIONA</h1>
+	<!--vado al link book method post con il libro che gli passo per questo posso usare il campo Book book poi maybe-->
+	<form th:action="@{/author}" method="POST" th:object="${author}">
+		<div>
+			Nome Autore: <span><input required type="text" th:field="${author.name}" /></span>
+		</div>
+		<div>
+			Cognome Autore: <span><input required type="text" th:field="${author.surname}"></span>
+		</div>
+		<div>
+			Nazionalità' Autore: <span><input required type="text" th:field="${author.nationality}"></span>
+		</div>
+		<div>
+			Anno di Nascita: <span><input required type="date" th:field="${author.dateOfBirth}" /></span>
+		</div>
+		<div>
+			Anno di Morte (se ci sta): <span><input type="date" th:field="${author.dateOfDeath}" /></span>
+		</div>
+		<!--<div>
+			Foto in futuro: <span><input type="url" th:field="${movie.urlImage}" /></span>
+		</div>-->
+		<div>
+			<span><button type="submit">Conferma</button></span>
+		</div>
+	</form>
+</body>
+
+</html>
