@@ -7,6 +7,13 @@
 <body>
 	<nav>
 		<header>
+			<div sec:authorize="isAuthenticated()">
+					            <span th:text="${#authentication.name}"></span>
+					            <a href="/logout">Logout</a>
+					        </div>
+					        <div sec:authorize="isAnonymous()">
+					            <a href="/login">Login</a>
+					        </div>
 		    </header>
 	<h1>HOMEPAGE SIWBOOKS</h1>
 	</nav>

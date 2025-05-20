@@ -16,7 +16,7 @@ public class Credentials {
 	private String role;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	private SiwUser user;
+	private User user;
 	
 	
 	public Long getId() {
@@ -51,11 +51,11 @@ public class Credentials {
 		this.role = role;
 	}
 
-	public SiwUser getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(SiwUser user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 

@@ -21,10 +21,10 @@ public class BookController {
 	private AuthorService authorService;
 	
 	 // homepage del sito
-	@GetMapping("/")
-	public String getHomepage() {
-		return "homepage.html";
-	}
+//	@GetMapping("/")
+//	public String getHomepage() {
+//		return "homepage.html";
+//	}
 	
 	@GetMapping("/books")
 	public String getBooks(Model model) {

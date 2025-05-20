@@ -1,11 +1,11 @@
 package it.uniroma3.siw.model;
 
 import java.util.List;
-
 import jakarta.persistence.*;
 
 @Entity
-public class SiwUser {
+@Table(name = "users")
+public class User {
 	@Id 
 	@GeneratedValue
 	private Long id;

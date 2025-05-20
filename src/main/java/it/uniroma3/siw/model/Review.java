@@ -23,7 +23,7 @@ public class Review {
 	private Book reviewedBook;
 	
 	@ManyToOne
-	private SiwUser reviewedByUser;
+	private User reviewedByUser;
 	
 	
 	public Long getId() {
@@ -66,11 +66,11 @@ public class Review {
 		this.reviewedBook = reviewedBook;
 	}
 
-	public SiwUser getReviewedByUser() {
+	public User getReviewedByUser() {
 		return reviewedByUser;
 	}
 
-	public void setReviewedByUser(SiwUser reviewedByUser) {
+	public void setReviewedByUser(User reviewedByUser) {
 		this.reviewedByUser = reviewedByUser;
 	}
 }
