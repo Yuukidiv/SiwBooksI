@@ -12,6 +12,7 @@
 		    <img th:src="@{'/images/' + ${img.filename}}" width="200" />
 		</div>-->
 		    <h1 th:text="${book.title}">Titolo libro</h1>
+			<!--<img th:src="@{'/images/' + ${book.imageFilename}}" alt="Copertina" />-->
 			<a th:href="@{'/edit/book/' + ${book.id}}">Modifica Libro</a>
 			<form th:action="@{'/delete/book/' + ${book.id}}" method="post" style="display:inline;">
 			    <button type="submit" onclick="return confirm('Sei sicuro di voler cancellare questo libro?');">

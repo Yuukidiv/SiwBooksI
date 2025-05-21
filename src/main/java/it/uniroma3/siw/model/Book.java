@@ -19,8 +19,7 @@ public class Book {
 	@OneToMany(mappedBy = "reviewedBook")
 	private List<Review> reviews;
 	
-	@OneToOne
-	private Image image;
+	// private String imageFilename;
 	
 	public Long getId() {
 		return id;

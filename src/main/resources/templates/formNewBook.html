@@ -16,9 +16,9 @@
 			Anno di Pubblicazione: <span><input required type="number" th:field="${book.dateOfPublication}" /></span>
 		</div>
 		<div>
-			Foto che vuoi aggiungere: <span><input input type ="file" name="imageFile" accept="image/*" 
-			th:field="${book.image}" required></span>
-		</div>
+            <label for="imageFile">Immagine (copertina):</label>
+            <input type="file" name="imageFile" accept="image/*" />
+        </div>
 		<div>
 			<span><button type="submit">Conferma</button></span>
 		</div>

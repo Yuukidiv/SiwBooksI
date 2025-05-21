@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.service.AuthorService;
@@ -47,8 +49,9 @@ public class BookController {
 	}
 	// saving the book in the system with a POST METHOD CALL
 	@PostMapping("/book") 
-	public String saveBook(Model model, Book book) {
+	public String saveBook(Model model, Book book, @RequestParam("imageFile") MultipartFile file) {
 		/*System.out.println(">> data pubblicazione: " + book.getDateOfPublication());*/
+		
 		this.bookService.saveBook(book);
 		return "redirect:book/" + book.getId();
 	}

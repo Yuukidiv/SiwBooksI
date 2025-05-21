@@ -16,10 +16,10 @@
 		<div>
 			Anno di Pubblicazione: <span><input required type="number" th:field="${book.dateOfPublication}" /></span>
 		</div>
-		<!--<div>
-		        Immagini del libro: 
-		        <input type="file" name="images" multiple />
-		    </div>-->
+		<div>
+	        <label for="imageFile">Immagine (copertina):</label>
+	        <input type="file" name="imageFile" accept="image/*" />
+		</div>
 		<div>
 			<span><button type="submit">Salva Modifiche</button></span>
 		</div>
