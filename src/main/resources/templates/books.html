@@ -7,6 +7,13 @@
 
 <body>
 	<h1>Books</h1>
+	<h2>Cerca Il tuo libro:</h2>
+	<form th:action="@{/books/results}" method="post">
+	    <input type="text" name="title" th:value="${title}" placeholder="Titolo"/>
+	    <input type="text" name="author" placeholder="Autore"/>
+	    <input type="number" name="dateOfPublication" placeholder="Anno"/>
+	    <button type="submit">Cerca</button>
+	</form>
 	<div th:if="${books.isEmpty()}">Non ci sono libri nel sistema</div>
 	<ul>
 		<li th:each="book : ${books}">

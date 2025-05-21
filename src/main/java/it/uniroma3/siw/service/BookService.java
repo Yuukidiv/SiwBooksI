@@ -32,4 +32,9 @@ public class BookService {
 	public void deleteBook2(Book book) {
 		this.bookRepository.delete(book);
 	}
+
+	public List<Book> searchBooks(String book, Integer dateOfPublication) {
+		System.out.printf("Searching: title='%s', year=%s\n", book, dateOfPublication);
+		return  (List<Book>) bookRepository.searchBooks(book, dateOfPublication);
+	}
 }
