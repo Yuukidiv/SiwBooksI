@@ -8,10 +8,14 @@ public class Image {
     @GeneratedValue
     private Long id;
 
-    private String filename;
+    private String filename;	// name of the file in the fylesystem
+    
+    private String name;
+    private String type;
+    
 
     @ManyToOne
-    private Book book;
+    private Book book;	// the book has many photos rn future also for the authors and the user/admin
 
 	public Long getId() {
 		return id;
@@ -35,6 +39,22 @@ public class Image {
 
 	public void setBook(Book book) {
 		this.book = book;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
     
