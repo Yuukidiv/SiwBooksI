@@ -1,0 +1,36 @@
+<!DOCTYPE html>	
+<html>
+
+<head>
+	    <title>Book</title>
+<!--	<link rel="stylesheet" href="/stile.css?version=2" />-->
+</head>
+
+<body>
+	    <div th:if="${book}">
+		<!--<div th:each="img : ${book.images}">
+		    <img th:src="@{'/images/' + ${img.filename}}" width="200" />
+		</div>-->
+		    <h1 th:text="${book.title}">Titolo libro</h1>
+			<!--<img th:src="@{'/images/' + ${book.imageFilename}}" alt="Copertina" />-->
+			<a th:href="@{'admin/edit/book/' + ${book.id}}">Modifica Libro</a>
+			<a th:href="@{'/book/review/' + ${book.id}}">Scrivi una Recensione</a>
+			<form th:action="@{'/delete/book/' + ${book.id}}" method="post" style="display:inline;">
+			    <button type="submit" onclick="return confirm('Sei sicuro di voler cancellare questo libro?');">
+			        Cancella il libro dal database
+			    </button>
+			</form>
+		        <div>Anno: <span th:text="'(' + ${book.dateOfPublication} + ')'">2000</span></div>
+		    </div>
+		<h1>Lista Autori del libro</h1>
+					<div th:if="${authors.isEmpty()}">Autore Sconosciuto</div>
+					<ul>
+						<li th:each="author : ${authors}">
+							<a th:href="@{'/author/' + ${author.id}}" th:text="${author.name} + ' ' + ${author.surname}">Kafka</a>
+						</li>
+					</ul>
+	    <div th:unless="${book}">Non esiste il libro che hai selezionato</div>
+	 
+</body>
+
+</html>

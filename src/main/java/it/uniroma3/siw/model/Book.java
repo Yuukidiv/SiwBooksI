@@ -12,6 +12,7 @@ public class Book {
 	private Long id;
 	private String title;
 	private Integer dateOfPublication;
+	private String description;
 	
 	@ManyToMany
 	private List<Author> authors;
@@ -60,4 +61,13 @@ public class Book {
 	public void setReviews(List<Review> reviews) {
 		this.reviews = reviews;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }

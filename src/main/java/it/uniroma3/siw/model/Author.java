@@ -15,6 +15,7 @@ public class Author {
 	private java.time.LocalDate dateOfBirth;
 	private java.time.LocalDate dateOfDeath;
 	private String nationality;
+	private String description;
 	//private String fotografia;
 	
 	@ManyToMany(mappedBy = "authors")
@@ -61,6 +62,12 @@ public class Author {
 	}
 	public void setNationality(String nationality) {
 		this.nationality = nationality;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 }

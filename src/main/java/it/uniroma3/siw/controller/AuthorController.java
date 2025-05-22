@@ -39,11 +39,11 @@ public class AuthorController {
 		return "authorBooks.html";
 	}
 	
-	@GetMapping("/authors/newAuthor") 
+	@GetMapping("/admin/authors/newAuthor") 
 	public String newAuthor(Model model) {
 		model.addAttribute("author", new Author());
 		// libri da inserire per l'autore model.addAttribute("books", this)
-		return "formNewAuthor.html";
+		return "admin/formNewAuthor.html";
 	}
 	
 	// save the author by saving it and then redirecting to his new page I guess

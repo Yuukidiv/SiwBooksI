@@ -15,6 +15,10 @@ public class AuthorService {
 	public List<Author> getAllAuthors() {
 		return (List<Author>) authorRepository.findAll();
 	}
+	
+	public List<Author> getAllById(List<Long> id) {
+		return (List<Author>) this.authorRepository.findAllById(id);
+	}
 
 	public Author getAuthorById(Long id) {
 		return authorRepository.findById(id).orElse(null);
@@ -23,4 +27,6 @@ public class AuthorService {
 	public void saveAuthor(Author author) {
 		this.authorRepository.save(author);
 	}
+	
+
 }

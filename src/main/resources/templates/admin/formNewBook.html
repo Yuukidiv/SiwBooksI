@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nuovo Libro</title>
+    <style>
+        .author-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            width: 300px;
+        }
+        .author-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+    <script>
+        function moveAuthor(id, fromListId, toListId) {
+            const from = document.getElementById(fromListId);
+            const to = document.getElementById(toListId);
+            const authorDiv = document.getElementById("author-" + id);
+            from.removeChild(authorDiv);
+            to.appendChild(authorDiv);
+
+            // Cambia il pulsante da Aggiungi a Rimuovi o viceversa
+            const button = authorDiv.querySelector("button");
+            if (fromListId === "availableAuthors") {
+                button.innerText = "Rimuovi";
+                button.onclick = () => moveAuthor(id, "selectedAuthors", "availableAuthors");
+                authorDiv.querySelector("input").disabled = false;
+            } else {
+                button.innerText = "Aggiungi";
+                button.onclick = () => moveAuthor(id, "availableAuthors", "selectedAuthors");
+                authorDiv.querySelector("input").disabled = true;
+            }
+        }
+
+        function selectAll() {
+            // Assicura che gli autori selezionati siano attivi al submit
+            document.querySelectorAll('#selectedAuthors input[name="authorIds"]').forEach(input => {
+                input.disabled = false;
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>Aggiungi un nuovo Libro</h1>
+
+<form th:action="@{/book}" method="POST" enctype="multipart/form-data" th:object="${book}" onsubmit="selectAll()">
+    <div>
+        Titolo: <input type="text" th:field="*{title}" required />
+    </div>
+    <div>
+        Anno pubblicazione: <input type="number" th:field="*{dateOfPublication}" required />
+    </div>
+    <div>
+        Descrizione: <input type="text" th:field="*{description}" />
+    </div>
+    <div>
+        Immagine: <input type="file" name="imageFile" accept="image/*" />
+    </div>
+
+    <h3>Autori selezionati</h3>
+    <div id="selectedAuthors" class="author-list">
+        <!-- inizialmente vuoto -->
+    </div>
+
+    <h3>Autori disponibili</h3>
+    <div id="availableAuthors" class="author-list">
+        <div th:each="author : ${authors}" th:id="'author-' + ${author.id}" class="author-item">
+            <span th:text="${author.name + ' ' + author.surname}"></span>
+            <input type="hidden" name="authorIds" th:value="${author.id}" disabled />
+            <button type="button" th:onclick="'moveAuthor(' + ${author.id} + ', \'availableAuthors\', \'selectedAuthors\')'">Aggiungi</button>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button type="submit">Conferma</button>
+    </div>
+</form>
+</body>
+</html>
