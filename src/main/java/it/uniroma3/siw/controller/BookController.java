@@ -44,6 +44,7 @@ public class BookController {
 		}
 		model.addAttribute("book", this.bookService.getBookById(id));
 		model.addAttribute("authors", book.getAuthors());
+		model.addAttribute("reviews", book.getReviews());
 		return "book.html";
 	}
 

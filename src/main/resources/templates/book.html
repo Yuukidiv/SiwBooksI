@@ -9,7 +9,7 @@
 <body>
 	    <div th:if="${book}">
 		    <h1 th:text="${book.title}">Titolo libro</h1>
-			<a th:href="@{'/book/review/' + ${book.id}}">Scrivi una Recensione</a>
+			<a th:href="@{'/book/addReview/' + ${book.id}}">Scrivi una Recensione</a>
 		    <div>Anno: <span th:text="'(' + ${book.dateOfPublication} + ')'">2000</span></div>
 			<div>
 				<h1>Descrizione Libro</h1>
@@ -24,6 +24,14 @@
 					<a th:href="@{'/author/' + ${author.id}}" th:text="${author.name} + ' ' + ${author.surname}">Kafka</a>
 				</li>
 			</ul>
+		<h1>Lista di recensioni</h1>
+		<div th:if="${reviews.isEmpty()}"> Non ci sono recensioni</div>
+		<ul>
+						<li th:each="review : ${reviews}">
+							<p th:text="${review.title} + ' ' + ${review.vote}">Kafka</p>
+							<p th:text="${review.text}">Testo</p>
+						</li>
+					</ul>
 	    <div th:unless="${book}">Non esiste il libro che hai selezionato</div>
 	 
 </body>
