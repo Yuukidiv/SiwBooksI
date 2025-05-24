@@ -26,6 +26,11 @@ public class AuthenticationController {
 	
 	@GetMapping(value = "/register") 
 	public String showRegisterForm (Model model) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()
+		        && !(authentication instanceof AnonymousAuthenticationToken)) {
+			return "redirect:/";
+		}
 		model.addAttribute("user", new User());
 		model.addAttribute("credentials", new Credentials());
 		return "formRegisterUser";
@@ -33,6 +38,11 @@ public class AuthenticationController {
 	
 	@GetMapping(value = "/login") 
 	public String showLoginForm (Model model, @RequestParam(value = "error", required = false) String error) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()
+		        && !(authentication instanceof AnonymousAuthenticationToken)) {
+			return "redirect:/";
+		}
 		if (error != null) 
 			model.addAttribute("msgError", "Username o Password sbagliati");
 		return "formLogin";
@@ -70,7 +80,11 @@ public class AuthenticationController {
                  BindingResult userBindingResult, @Valid
                  @ModelAttribute("credentials") Credentials credentials,
                  BindingResult credentialsBindingResult,
-                 Model model) {
+                 Model model, @RequestParam("confirmPassword") String psw) {
+		if(!credentials.getPassword().equals(psw)) {
+			model.addAttribute("passwordError", "Password non coincidono");
+			 return "formRegisterUser";
+		}
 
         // se user e credential hanno entrambi contenuti validi, memorizza User e the Credentials nel DB
         if(!userBindingResult.hasErrors() && ! credentialsBindingResult.hasErrors()) {
