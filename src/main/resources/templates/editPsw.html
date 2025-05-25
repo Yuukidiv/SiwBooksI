@@ -1,0 +1,28 @@
+<form th:action="@{/profile/editProfile}" method="post">
+	<h2>Modifica Password</h2>
+
+	<div class="mb-2">
+		<label>Password Attuale</label>
+		<input type="password" class="form-control" name="oldPsw" th:field="${credentials.password}">
+	</div>
+
+	<div class="mb-2">
+		<label>Nuova Password</label>
+		<input type="password" class="form-control"  name="newPsw" th:field="${credentials.password}">
+	</div>
+
+	<div class="mb-2">
+		<label>Conferma Password</label>
+		<input type="password" class="form-control" name="confirmPsw" th:field="${credentials.password}">
+	</div>
+
+
+
+	<!-- Campi hidden per password e ruolo, servono per salvare correttamente senno mi perdo i valori dietro -->
+	<input type="hidden" th:field="${user.id}" />
+	<input type="hidden" th:field="${credentials.id}" />
+	<input type="hidden" th:field="${credentials.password}" />
+	<input type="hidden" th:field="${credentials.role}" />
+
+	<button type="submit" class="btn btn-primary">Salva</button>
+</form>

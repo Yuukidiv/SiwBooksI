@@ -15,14 +15,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.siw.model.Credentials;
+
 import it.uniroma3.siw.model.User;
+
 import it.uniroma3.siw.service.CredentialsService;
+import it.uniroma3.siw.service.UserService;
 
 @Controller
 public class AuthenticationController {
 	
 	@Autowired
 	private CredentialsService credentialsService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@GetMapping(value = "/register") 
 	public String showRegisterForm (Model model) {
@@ -95,4 +101,82 @@ public class AuthenticationController {
         }
         return "registerUser";
     }
+	
+	@GetMapping("/profile") 
+	public String getProfile(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    UserDetails userDetails = (UserDetails) auth.getPrincipal();
+
+	    
+	    Credentials credenziali = credentialsService.getCredentials(userDetails.getUsername());
+	    User utente = credenziali.getUser();
+	    
+	    model.addAttribute("user", utente);
+	    model.addAttribute("credentials", credenziali);
+
+		return "profile.html";
+	}
+	
+	// modifica profilo 
+	@GetMapping("/profile/editProfile")
+	public String editProfile(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    UserDetails userDetails = (UserDetails) auth.getPrincipal();
+
+	    
+	    Credentials credenziali = credentialsService.getCredentials(userDetails.getUsername());
+	    User utente = credenziali.getUser();
+	    System.out.println("=== DEBUG: Salvataggio Profilo Utente ===");
+	    System.out.println("Username: " + credenziali.getUsername());
+	    System.out.println("Ruolo: " + credenziali.getRole());
+	    System.out.println("Password: " + credenziali.getPassword()); 
+	    
+	    System.out.println("Nome: " + utente.getName());
+	    System.out.println("Cognome: " + utente.getSurname());
+	    System.out.println("Email: " + utente.getEmail());
+		model.addAttribute("credentials", credenziali);
+		model.addAttribute("user", utente);
+		
+		return "editProfile.html";
+	}
+	
+	@PostMapping("/profile/editProfile")
+	public String saveEditProfile(Model model, User user, Credentials credentials) {
+	    // DEBUG PRINTS
+	    System.out.println("=== DEBUG: Salvataggio Profilo Utente ===");
+	    System.out.println("Username: " + credentials.getUsername());
+	    System.out.println("Ruolo: " + credentials.getRole());
+	    System.out.println("Password: " + credentials.getPassword()); 
+	    
+	    System.out.println("Nome: " + user.getName());
+	    System.out.println("Cognome: " + user.getSurname());
+	    System.out.println("Email: " + user.getEmail());
+
+	    // Associa utente a credenziali
+	    credentials.setUser(user);
+	    this.userService.saveUser(user);
+	   
+        credentialsService.saveCredentials(credentials);
+
+	    return "redirect:/profile";
+	}
+	
+	@GetMapping("modifyPassword") 
+	public String editPsw(Model model) {
+		return "editPsw.html";
+	}
+	
+	@PostMapping("/modifyPassword") 
+	public String modPsw(Model model, @RequestParam("oldPsw") String oldPsw, @RequestParam("newPsw") String newPsw,
+							@RequestParam("confirmPsw") String confirmPsw) {
+		// check if the password are correct and if the new password is actually new
+	
+		return "redirect:/profile";
+	}
+	
+
+	
+	
+	
 }
+ 

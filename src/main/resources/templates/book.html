@@ -11,6 +11,7 @@
 		    <h1 th:text="${book.title}">Titolo libro</h1>
 			<a th:href="@{'/book/addReview/' + ${book.id}}">Scrivi una Recensione</a>
 		    <div>Anno: <span th:text="'(' + ${book.dateOfPublication} + ')'">2000</span></div>
+			<a th:href="@{'/edit/book/' + ${book.id}}"}>Edit Book</a>
 			<div>
 				<h1>Descrizione Libro</h1>
 				<p th:text="${book.description}">Non ancora inserita</p>

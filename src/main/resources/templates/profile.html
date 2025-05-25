@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Profilo Utente</title>
+</head>
+
+<body class="profilo-Utente">
+
+	<div class="container">
+
+		<h3>Profile User</h3>
+
+		<p><strong>Nome:</strong> <span th:text="${user.name}">Ciccio</span></p>
+		<p><strong>Cognome:</strong> <span th:text="${user.surname}">Gamer</span></p>
+		<p><strong>Email:</strong> <span th:text="${user.email}">ciccio.gamer@gmail.com</span></p>
+		<p><strong>Username:</strong> <span th:text="${credentials.username}">cicciogamer89</span></p>
+		<a href="/profile/editProfile">Modifica Profilo</a>
+		<p>Da inserire modifica psw ed elimina account</p>
+		<a href="/">Torna alla homepage</a>
+
+	</div>
+
+</body>
+
+</html>

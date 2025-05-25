@@ -1,0 +1,31 @@
+<form th:action="@{/profile/editProfile}" method="post">
+    <h2>Modifica Profilo</h2>
+
+    <div class="mb-2">
+        <label>Nome:</label>
+        <input type="text" class="form-control" th:field="${user.name}">
+    </div>
+
+    <div class="mb-2">
+        <label>Cognome:</label>
+        <input type="text" class="form-control" th:field="${user.surname}">
+    </div>
+
+    <div class="mb-2">
+        <label>Email:</label>
+        <input type="text" class="form-control" th:field="${user.email}">
+    </div>
+
+    <div class="mb-2">
+        <label>Username:</label>
+        <input type="text" class="form-control" th:field="${credentials.username}">
+    </div>
+	
+	<!-- Campi hidden per password e ruolo, servono per salvare correttamente senno mi perdo i valori dietro -->
+		<input type="hidden" th:field="${user.id}"/>
+		<input type="hidden" th:field="${credentials.id}"/>
+	   <input type="hidden" th:field="${credentials.password}" />
+	   <input type="hidden" th:field="${credentials.role}" />
+
+    <button type="submit" class="btn btn-primary">Salva</button>
+</form>
