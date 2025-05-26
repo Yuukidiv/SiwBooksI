@@ -3,9 +3,12 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +32,12 @@ public class AuthenticationController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	
 	@GetMapping(value = "/register") 
 	public String showRegisterForm (Model model) {
@@ -97,7 +106,15 @@ public class AuthenticationController {
             credentials.setUser(user);
             credentialsService.saveCredentials(credentials);
             model.addAttribute("user", user);
-            return "registrationSuccessful";
+			/*
+			 * Authentication authentication = new UsernamePasswordAuthenticationToken(
+			 * credentials.getUsername(), psw // <- la password in chiaro inserita
+			 * dall’utente, non quella codificata ); Authentication auth =
+			 * authenticationManager.authenticate(authentication);
+			 * SecurityContextHolder.getContext().setAuthentication(auth);
+			 */
+            
+            return "redirect:/login";
         }
         return "registerUser";
     }
@@ -157,20 +174,43 @@ public class AuthenticationController {
 	    this.userService.saveUser(user);
 	   
         credentialsService.saveCredentials(credentials);
+        model.addAttribute("success", "profilo aggiornato modificato");
 
 	    return "redirect:/profile";
 	}
 	
-	@GetMapping("modifyPassword") 
+	@GetMapping("/profile/modifyPassword") 
 	public String editPsw(Model model) {
 		return "editPsw.html";
 	}
 	
-	@PostMapping("/modifyPassword") 
+	@PostMapping("/profile/modifyPassword") 
 	public String modPsw(Model model, @RequestParam("oldPsw") String oldPsw, @RequestParam("newPsw") String newPsw,
 							@RequestParam("confirmPsw") String confirmPsw) {
-		// check if the password are correct and if the new password is actually new
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    UserDetails userDetails = (UserDetails) auth.getPrincipal();
+
+	    
+	    Credentials credenziali = credentialsService.getCredentials(userDetails.getUsername());
+	    User user = credenziali.getUser();
+	    
+	    if (!passwordEncoder.matches(oldPsw, credenziali.getPassword())) {
+	    	model.addAttribute("msgError", "Password inserita errata");
+	    	return "editPsw.html";
+	    }
+	    
+	    if (!newPsw.equals(confirmPsw))  {
+	    	model.addAttribute("msgError", "Password inserite diverse");
 	
+	    	return "editPsw.html";
+	    }
+	    
+	    // se tutto va bene
+	    credenziali.setPassword(newPsw);
+	    credentialsService.saveCredentials(credenziali);
+	    
+	    model.addAttribute("success", "modifiche apportate!");
+	    
 		return "redirect:/profile";
 	}
 	

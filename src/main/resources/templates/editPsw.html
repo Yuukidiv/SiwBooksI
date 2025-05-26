@@ -1,28 +1,26 @@
-<form th:action="@{/profile/editProfile}" method="post">
+<form th:action="@{/profile/modifyPassword}" method="post">
 	<h2>Modifica Password</h2>
-
+	<p class="text-danger" th:if="${msgError}" th:text="${msgError}"></p>
 	<div class="mb-2">
 		<label>Password Attuale</label>
-		<input type="password" class="form-control" name="oldPsw" th:field="${credentials.password}">
+		<input type="text" class="form-control" name="oldPsw">
 	</div>
 
 	<div class="mb-2">
 		<label>Nuova Password</label>
-		<input type="password" class="form-control"  name="newPsw" th:field="${credentials.password}">
+		<input type="text" class="form-control"  name="newPsw">
 	</div>
 
 	<div class="mb-2">
 		<label>Conferma Password</label>
-		<input type="password" class="form-control" name="confirmPsw" th:field="${credentials.password}">
+		<input type="text" class="form-control" name="confirmPsw">
 	</div>
 
 
 
 	<!-- Campi hidden per password e ruolo, servono per salvare correttamente senno mi perdo i valori dietro -->
-	<input type="hidden" th:field="${user.id}" />
-	<input type="hidden" th:field="${credentials.id}" />
-	<input type="hidden" th:field="${credentials.password}" />
-	<input type="hidden" th:field="${credentials.role}" />
+	<!--<input type="hidden" th:field="${user.id}" />
+	<input type="hidden" th:field="${credentials.id}" />-->
 
 	<button type="submit" class="btn btn-primary">Salva</button>
 </form>
