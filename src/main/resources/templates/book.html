@@ -29,6 +29,7 @@
 	<div th:if="${reviews.isEmpty()}"> Non ci sono recensioni</div>
 	<ul>
 		<li th:each="review : ${reviews}">
+			<p th:text="${review.reviewedByUser.name} + ' ' + ${review.reviewedByUser.surname}">Nome del tizio</p>
 			<p th:text="${review.title} + ' ' + ${review.vote}">Kafka</p>
 			<p th:text="${review.text}">Testo</p>
 			<form th:action="@{'/admin/delete/review/' + ${review.id}}" method="post" style="display:inline;">
