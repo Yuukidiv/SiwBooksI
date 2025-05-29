@@ -42,4 +42,10 @@ public class CredentialsService {
         credentials.setPassword(this.passwordEncoder.encode(credentials.getPassword()));
         return this.credentialsRepository.save(credentials);
     }
+    
+    // metodo aggiunto da me che non so se va bene
+    
+    public void delete(Credentials cr) {
+    	this.credentialsRepository.delete(cr);
+    }
 }

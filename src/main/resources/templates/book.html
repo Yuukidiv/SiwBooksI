@@ -1,38 +1,44 @@
-<!DOCTYPE html>	
+<!DOCTYPE html>
 <html>
 
 <head>
 	    <title>Book</title>
-<!--	<link rel="stylesheet" href="/stile.css?version=2" />-->
+	<!--	<link rel="stylesheet" href="/stile.css?version=2" />-->
 </head>
 
 <body>
 	    <div th:if="${book}">
 		    <h1 th:text="${book.title}">Titolo libro</h1>
-			<a th:href="@{'/book/addReview/' + ${book.id}}">Scrivi una Recensione</a>
+		<a th:href="@{'/book/addReview/' + ${book.id}}">Scrivi una Recensione</a>
 		    <div>Anno: <span th:text="'(' + ${book.dateOfPublication} + ')'">2000</span></div>
-			<a th:href="@{'/edit/book/' + ${book.id}}"}>Edit Book</a>
-			<div>
-				<h1>Descrizione Libro</h1>
-				<p th:text="${book.description}">Non ancora inserita</p>
-			</div>
-			<h3>Inserire: foto, autori, descrizione libro, recensioni libro, about autori, aggiungi alla lista</h3>
+		<a th:href="@{'/edit/book/' + ${book.id}}" }>Edit Book</a>
+		<div>
+			<h1>Descrizione Libro</h1>
+			<p th:text="${book.description}">Non ancora inserita</p>
 		</div>
-		<h1>Lista Autori del libro</h1>
-			<div th:if="${authors.isEmpty()}">Autore Sconosciuto</div>
-			<ul>
-				<li th:each="author : ${authors}">
-					<a th:href="@{'/author/' + ${author.id}}" th:text="${author.name} + ' ' + ${author.surname}">Kafka</a>
-				</li>
-			</ul>
-		<h1>Lista di recensioni</h1>
-		<div th:if="${reviews.isEmpty()}"> Non ci sono recensioni</div>
-		<ul>
-						<li th:each="review : ${reviews}">
-							<p th:text="${review.title} + ' ' + ${review.vote}">Kafka</p>
-							<p th:text="${review.text}">Testo</p>
-						</li>
-					</ul>
+		<h3>Inserire: foto, autori, descrizione libro, recensioni libro, about autori, aggiungi alla lista</h3>
+	</div>
+	<h1>Lista Autori del libro</h1>
+	<div th:if="${authors.isEmpty()}">Autore Sconosciuto</div>
+	<ul>
+		<li th:each="author : ${authors}">
+			<a th:href="@{'/author/' + ${author.id}}" th:text="${author.name} + ' ' + ${author.surname}">Kafka</a>
+		</li>
+	</ul>
+	<h1>Lista di recensioni</h1>
+	<div th:if="${reviews.isEmpty()}"> Non ci sono recensioni</div>
+	<ul>
+		<li th:each="review : ${reviews}">
+			<p th:text="${review.title} + ' ' + ${review.vote}">Kafka</p>
+			<p th:text="${review.text}">Testo</p>
+			<form th:action="@{'/admin/delete/review/' + ${review.id}}" method="post" style="display:inline;">
+				<input type="hidden" name="bookId" th:value="${book.id}"/>
+				<button type="submit" onclick="return confirm('Sei sicuro di voler cancellare questa review?');">
+					Cancella la review di questo libro
+				</button>
+			</form>
+		</li>
+	</ul>
 	    <div th:unless="${book}">Non esiste il libro che hai selezionato</div>
 	 
 </body>

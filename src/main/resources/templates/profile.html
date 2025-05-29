@@ -18,7 +18,11 @@
 		<p><strong>Username:</strong> <span th:text="${credentials.username}">cicciogamer89</span></p>
 		<a href="/profile/editProfile">Modifica Profilo</a>
 		<a href="/profile/modifyPassword">Modifica Password</a>
-		<p>Da inserire modifica psw ed elimina account</p>
+		<!--<form th:action="@{'/delete/profile'}" method="post" style="display:inline;">
+					    <button type="submit" onclick="return confirm('Sei sicuro di voler cancellare il tuo profilo utente?');">
+					        Cancella il profilo dal database
+					    </button>
+					</form>--><!-- forse devo renderlo un form -->
 		<a href="/">Torna alla homepage</a>
 
 	</div>

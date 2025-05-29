@@ -15,17 +15,10 @@
         <label>Email:</label>
         <input type="text" class="form-control" th:field="${user.email}">
     </div>
-
-    <div class="mb-2">
-        <label>Username:</label>
-        <input type="text" class="form-control" th:field="${credentials.username}">
-    </div>
 	
 	<!-- Campi hidden per password e ruolo, servono per salvare correttamente senno mi perdo i valori dietro -->
 		<input type="hidden" th:field="${user.id}"/>
-		<input type="hidden" th:field="${credentials.id}"/>
-	   <input type="hidden" th:field="${credentials.password}" />
-	   <input type="hidden" th:field="${credentials.role}" />
+	   <input type="hidden" th:object="${credentials} " />
 
     <button type="submit" class="btn btn-primary">Salva</button>
 </form>

@@ -53,4 +53,11 @@ public class UserService {
             result.add(user);
         return result;
     }
+    
+    
+    // metodo aggiunto da me che non so se funziona bene bene 
+    
+    public void delete(User user) {
+    	this.userRepository.delete(user);
+    }
 }

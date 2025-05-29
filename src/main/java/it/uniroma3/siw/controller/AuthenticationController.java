@@ -73,7 +73,7 @@ public class AuthenticationController {
 			UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			Credentials credentials = credentialsService.getCredentials(userDetails.getUsername());
 			if (credentials.getRole().equals(Credentials.ADMIN_ROLE)) {
-				return "admin/homeAdmin.html";
+				return "/admin/homeAdmin.html";
 			}
 		}
         return "homepage.html";
@@ -173,7 +173,7 @@ public class AuthenticationController {
 	    credentials.setUser(user);
 	    this.userService.saveUser(user);
 	   
-        credentialsService.saveCredentials(credentials);
+        // le credenziali non vengono cambiate in questo caso credentialsService.saveCredentials(credentials);
         model.addAttribute("success", "profilo aggiornato modificato");
 
 	    return "redirect:/profile";
