@@ -12,6 +12,7 @@ public class Book {
 	private Long id;
 	private String title;
 	private Integer dateOfPublication;
+	@Lob
 	private String description;
 	
 	@ManyToMany
