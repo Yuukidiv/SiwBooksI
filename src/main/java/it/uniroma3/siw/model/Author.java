@@ -15,6 +15,7 @@ public class Author {
 	private java.time.LocalDate dateOfBirth;
 	private java.time.LocalDate dateOfDeath;
 	private String nationality;
+	@Column(columnDefinition = "TEXT") 
 	private String description;
 	//private String fotografia;
 	

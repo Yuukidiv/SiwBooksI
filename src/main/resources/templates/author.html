@@ -3,26 +3,59 @@
 
 <head>
 	    <title>Author</title>
-<!--	<link rel="stylesheet" href="/stile.css?version=2" />-->
+	<!--	<link rel="stylesheet" href="/stile.css?version=2" />-->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
-	    <div th:if="${author}">
-		    <div>Nome: <span th:text="${author.name}">nome</span></div>
-		    <div>Cognome: <span th:text="${author.surname}">cognome</span></div>
-			<div>Anno di nascita: <span th:text="${author.dateOfBirth}">anno</span></div>
-			
-			<div th:if="${author.dateOfDeath != null}">
-			    <p th:text="'Data di morte: ' + ${author.dateOfDeath}"></p>
+	<nav th:replace="fragments/base.html :: navbar"></nav>
+	    <div class="container mt-5">
+		<!-- Autore trovato -->
+		<div th:if="${author}">
+			<div class="row">
+				<!-- Foto autore -->
+				<div class="col-md-4 text-center">
+					<img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1733692549i/217171544.jpg"
+						class="card-img-top book-img" alt="Autore foto"
+						onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'">
+				</div>
+
+				<!-- Info autore -->
+				<div class="col-md-8">
+					<h1 class="mb-3" th:text="${author.name + ' ' + author.surname}">Nome Cognome</h1>
+					<p><strong>Anno di nascita:</strong> <span th:text="${author.dateOfBirth}">1950</span></p>
+
+					<p th:if="${author.dateOfDeath != null}">
+						<strong>Data di morte:</strong> <span th:text="${author.dateOfDeath}">2020</span>
+					</p>
+					<p th:unless="${author.dateOfDeath != null}">
+						<span class="badge bg-success"></span>
+					</p>
+
+					<p><strong>Nazionalità:</strong> <span th:text="${author.nationality}">Italiana</span></p>
+
+					<p th:if="${author.description}">
+						<strong>Descrizione:</strong>
+						<span th:text="${author.description}">Breve descrizione dell'autore.</span>
+					</p>
+					
+					<a th:href="@{'/author/' + ${author.id} + '/books'}" class="btn btn-outline-primary mt-3">
+						Visualizza i libri dell'autore
+					</a>
+				</div>
 			</div>
-			<div th:unless="${author.dateOfDeath != null}">
-			    <p>Autore vivente</p>
-			</div>
-			<div>Nazionalita: <span th:text="'(' + ${author.nationality} + ')'">anno</span></div>
-			<div>QUI CI STA LA FOTO E LA LISTA DI LIBRI DELL'AUTORE I GUESS MAGARI ANCHE UNA DESCRIZIONE O ALTRO	</div>
-			<a th:href="@{'/author/' + ${author.id} + '/books'}">Lista libri dell'autore</a>
-		       <!-- <span><img width="30%" th:src="${movie.urlImage}" /></span>-->
-	    <div th:unless="${author}">Non esiste l'autore che hai selezionato</div>
+		</div>
+
+		<!-- Autore non trovato -->
+		<div th:unless="${author}" class="alert alert-warning mt-5">
+			L'autore che hai selezionato non esiste.
+		</div>
+	</div>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 	 
 </body>
 

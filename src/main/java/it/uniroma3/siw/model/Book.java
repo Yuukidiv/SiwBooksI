@@ -12,7 +12,7 @@ public class Book {
 	private Long id;
 	private String title;
 	private Integer dateOfPublication;
-	@Lob
+	@Column(columnDefinition = "TEXT") 
 	private String description;
 	
 	@ManyToMany

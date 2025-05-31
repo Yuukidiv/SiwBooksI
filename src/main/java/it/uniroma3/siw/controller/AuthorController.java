@@ -35,6 +35,8 @@ public class AuthorController {
 		if (author == null) {
 			return "error404.html";
 		}
+		
+		model.addAttribute("author", author);
 		model.addAttribute("books", author.getBooks());
 		return "authorBooks.html";
 	}
