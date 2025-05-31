@@ -37,7 +37,7 @@
 
 		<!-- Titolo e barra di ricerca -->
 		<h1 class="text-center mb-4">Libreria</h1>
-		<form th:action="@{/books/results}" method="post" class="mb-5">
+		<form th:action="@{/books/results}" method="get" class="mb-5">
 			<div class="row justify-content-center g-2">
 				<div class="col-md-3">
 					<input type="text" name="title" th:value="${title}" class="form-control" placeholder="Titolo">
@@ -46,7 +46,7 @@
 					<input type="text" name="author" class="form-control" placeholder="Autore">
 				</div>
 				<div class="col-md-2">
-					<input type="number" name="dateOfPublication" class="form-control" placeholder="Anno">
+					<input type="number" name="dateOfPublication"  th:value="${dateOfPublication}" class="form-control" placeholder="Anno">
 				</div>
 				<div class="col-md-2">
 					<button type="submit" class="btn btn-primary w-100">Cerca</button>

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.repository.BookRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 public class BookService {
@@ -33,8 +35,11 @@ public class BookService {
 		this.bookRepository.delete(book);
 	}
 
+	@Transactional(readOnly = true)
 	public List<Book> searchBooks(String book, Integer dateOfPublication) {
-		System.out.printf("Searching: title='%s', year=%s\n", book, dateOfPublication);
+		System.out.printf("d: title='%s', year=%s\n", book, dateOfPublication);
 		return  (List<Book>) bookRepository.searchBooks(book, dateOfPublication);
 	}
+	
+	
 }

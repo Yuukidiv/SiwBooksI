@@ -90,10 +90,15 @@ public class BookController {
 	}
 
 
-	@PostMapping("/books/results") public String foundBooks(@RequestParam(required =
+	@GetMapping("/books/results") 
+	public String foundBooks(@RequestParam(required =
 			false) String title, @RequestParam(required = false) Integer dateOfPublication,  Model model) {
+		System.out.println("Titolo ricevuto: " + title);
+	    System.out.println("Anno di pubblicazione ricevuto: " + dateOfPublication);
 		model.addAttribute("books", this.bookService.searchBooks(title, dateOfPublication)); 
+		model.addAttribute("title", title);
+		// model.addAttribute("author", author);
+		model.addAttribute("dateOfPublication", dateOfPublication);
 		return "books.html"; }
-
 
 }
