@@ -6,15 +6,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
+import it.uniroma3.siw.service.BookService;
+import jakarta.transaction.Transactional;
 
 @Controller
 public class AuthorController {
 
 	@Autowired
 	private AuthorService authorService;
+	
+	@Autowired
+	private BookService bookService;
 	
 	@GetMapping("/authors")
 	public String getAllAuthors(Model model) {
@@ -55,4 +62,33 @@ public class AuthorController {
 		this.authorService.saveAuthor(author);
 		return "redirect:author/" + author.getId();
 	}
+	
+	// controller for editing the author
+	@GetMapping("/admin/author/{id}/edit")
+	public String editAuthor(Model model, @PathVariable Long id) {
+		Author author = this.authorService.getAuthorById(id);
+		model.addAttribute("author", author);
+		return "admin/editAuthor.html";
+	}
+	
+	@PostMapping("/admin/editedAuthor") 
+	public String editedAuthor(Model model, Author author) {
+		this.authorService.saveAuthor(author);
+		return "redirect:/author/" + author.getId();
+	}
+	
+	// when i delete something i need to see if there are foreign keys
+	@Transactional
+	@GetMapping("/admin/deleteAuthor/{id}") 
+	public String deleteAuthor(Model model, @PathVariable Long id) {
+		Author author = this.authorService.getAuthorById(id);
+		for (Book book : author.getBooks()) {
+            book.getAuthors().remove(author);
+            this.bookService.saveBook(book);
+        }
+		this.authorService.deleteAuthor(author);
+		return "redirect:/authors";
+	}
+	
+	
 }

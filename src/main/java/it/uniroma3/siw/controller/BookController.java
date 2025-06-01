@@ -24,12 +24,6 @@ public class BookController {
 	@Autowired
 	private AuthorService authorService;
 
-	// homepage del sito
-	//	@GetMapping("/")
-	//	public String getHomepage() {
-	//		return "homepage.html";
-	//	}
-
 	@GetMapping("/books")
 	public String getBooks(Model model) {
 		model.addAttribute("books", this.bookService.getAllBooks());
@@ -82,7 +76,7 @@ public class BookController {
 		return "redirect:/book/" + book.getId();
 	}
 
-	@PostMapping("/delete/book/{id}")
+	@GetMapping("/admin/deleteBook/{id}")
 	public String deleteBook(Model model, @PathVariable Long id) {
 		Book book1 = this.bookService.getBookById(id);
 		this.bookService.deleteBook2(book1);

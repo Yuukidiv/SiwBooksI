@@ -18,7 +18,7 @@ public class Book {
 	@ManyToMany
 	private List<Author> authors;
 	
-	@OneToMany(mappedBy = "reviewedBook")
+	@OneToMany(mappedBy = "reviewedBook", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Review> reviews;
 	
 	// private String imageFilename;

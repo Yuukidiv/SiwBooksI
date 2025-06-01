@@ -38,6 +38,7 @@
 
                     <!-- Pulsanti azione -->
                     <a th:href="@{'/edit/book/' + ${book.id}}" class="btn btn-outline-primary me-2">Modifica libro</a>
+					<a th:href="@{'/admin/deleteBook/' + ${book.id}}" class="btn btn-outline-danger me-2">Cancella il libro</a>
                     <a th:href="@{'/book/addReview/' + ${book.id}}" class="btn btn-success">Scrivi una recensione</a>
                 </div>
             </div>

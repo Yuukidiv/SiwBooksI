@@ -69,9 +69,9 @@
 							onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'">
 						<div class="card-body d-flex flex-column">
 							<h5 class="card-title mb-1" th:text="${book.title}">Titolo</h5>
-							<p class="card-text mb-0"
-								th:text="'Autore: ' + ${book.authors[0]?.name} + ' ' + ${book.authors[0]?.surname}">
-								Autore
+							<p class="card-text mb-0" th:if="${#lists.isEmpty(book.authors)}">Autore sconosciuto</p>
+							<p class="card-text mb-0" th:unless="${#lists.isEmpty(book.authors)}"
+							   th:text="'Autore: ' + ${book.authors.get(0).name} + ' ' + ${book.authors.get(0).surname}">
 							</p>
 							<p class="card-text text-muted" th:text="'Anno: ' + ${book.dateOfPublication}">2000</p>
 						</div>
