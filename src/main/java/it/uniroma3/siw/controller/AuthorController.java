@@ -1,14 +1,19 @@
 package it.uniroma3.siw.controller;
 
+import java.util.List;
+
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import it.uniroma3.siw.model.Book;
+import it.uniroma3.siw.controller.validator.AuthorValidator;
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
@@ -22,6 +27,9 @@ public class AuthorController {
 	
 	@Autowired
 	private BookService bookService;
+	
+	@Autowired
+	private AuthorValidator authorValidator;
 	
 	@GetMapping("/authors")
 	public String getAllAuthors(Model model) {
@@ -51,16 +59,32 @@ public class AuthorController {
 	@GetMapping("/admin/authors/newAuthor") 
 	public String newAuthor(Model model) {
 		model.addAttribute("author", new Author());
-		// libri da inserire per l'autore model.addAttribute("books", this)
+		model.addAttribute("books", bookService.getAllBooks());
 		return "admin/formNewAuthor.html";
 	}
 	
 	// save the author by saving it and then redirecting to his new page I guess
 	@PostMapping("/author")
-	public String saveAuthor(Model model, Author author) {
-		System.out.println(">> ID DELLAUTORE CHE DUPLICA NON SI SA PERCHE: " + author.getId());
-		this.authorService.saveAuthor(author);
-		return "redirect:author/" + author.getId();
+	public String saveAuthor(Model model, Author author, BindingResult bindingResult, 
+			@RequestParam(name="bookIds", required = false ) List<Long> bookIds) {
+		
+		if (bookIds != null && !bookIds.isEmpty()) {
+	        List<Book> selectedBooks = bookService.getAllById(bookIds);
+	        author.setBooks(selectedBooks);
+	        for (Book b : selectedBooks) {
+	            b.getAuthors().add(author); // lato non proprietario allora devo sincronizzare 
+	        }
+	    }
+		
+		this.authorValidator.validate(author, bindingResult);
+		if (!bindingResult.hasErrors()) {
+			this.authorService.saveAuthor(author); 
+			model.addAttribute("author", author);
+			return "redirect:author/"+author.getId();
+		} else {
+			model.addAttribute("error", "The author already exists in the system");
+			return "admin/formNewAuthor.html"; 
+		}
 	}
 	
 	// controller for editing the author

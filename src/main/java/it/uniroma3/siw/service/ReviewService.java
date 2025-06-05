@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.model.Review;
+import it.uniroma3.siw.model.User;
 import it.uniroma3.siw.repository.ReviewRepository;
 
 @Service
@@ -27,5 +29,9 @@ public class ReviewService {
 	
 	public void delete(Review review) {
 		this.reviewRepository.delete(review);
+	}
+	
+	public boolean hasUserAlreadyReviewedBook(User user, Book book) {
+	    return reviewRepository.existsByReviewedByUserAndReviewedBook(user, book);
 	}
 }

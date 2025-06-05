@@ -21,7 +21,6 @@ public class BookService {
 	public Book getBookById(Long id) {
 		return bookRepository.findById(id).orElse(null);
 	}
-	// devo passare la lista filtrata in base all'autore I guess.
 	
 	public void saveBook(Book book) {
 		this.bookRepository.save(book);
@@ -34,10 +33,17 @@ public class BookService {
 		this.bookRepository.delete(book);
 	}
 
+	public List<Book> getAllById(List<Long> id) {
+		return (List<Book>) this.bookRepository.findAllById(id);
+	}
 	
 	public List<Book> searchBooks(String book, Integer dateOfPublication) {
 		System.out.printf("d: title='%s', year=%s\n", book, dateOfPublication);
 		return  (List<Book>) bookRepository.searchBooks(book, dateOfPublication);
+	}
+
+	public boolean existsByTitleAndDateOfPublication(String title, Integer dateOfPublication) {
+		return bookRepository.existsByTitleAndDateOfPublication(title, dateOfPublication);
 	}
 	
 	

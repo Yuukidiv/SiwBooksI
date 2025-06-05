@@ -46,10 +46,15 @@ public class ReviewController {
 	    UserDetails userDetails = (UserDetails) auth.getPrincipal();
 	    Credentials cred = credentialsService.getCredentials(userDetails.getUsername());
 	    User user = cred.getUser();
-	    
+	    Book book = this.bookService.getBookById(bookId);
+	    // se l'utente ha gia recensito questo libro allora non lo fa recensire 2 volte
+	    boolean alreadyReviewed = reviewService.hasUserAlreadyReviewedBook(user, book);
+	    if (alreadyReviewed) {
+	        model.addAttribute("errorMessage", "Hai già recensito questo libro.");
+	        model.addAttribute("book", book);
+	        return "review.html"; 
+	    }
 		
-		
-		Book book = this.bookService.getBookById(bookId);
 		review.setReviewedBook(book);
 		review.setReviewedByUser(user);
 		

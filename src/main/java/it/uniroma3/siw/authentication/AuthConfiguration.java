@@ -30,7 +30,7 @@ public class AuthConfiguration {
             throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
-                .authoritiesByUsernameQuery("SELECT username, role from credentials WHERE username=?")
+                .authoritiesByUsernameQuery("SELECT username, CONCAT('ROLE_', role) from credentials WHERE username=?")
                 .usersByUsernameQuery("SELECT username, password, 1 as enabled FROM credentials WHERE username=?");
     }
     
@@ -54,8 +54,8 @@ public class AuthConfiguration {
                 .requestMatchers(HttpMethod.GET,"/","/homepage","/register","/css/**", "/images/**", "books/**", "authors", "book/**", "author/**").permitAll()
         		// chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
                 .requestMatchers(HttpMethod.POST,"/register", "/login").permitAll()
-                .requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority(ADMIN_ROLE)
-                .requestMatchers(HttpMethod.POST,"/admin/**").hasAnyAuthority(ADMIN_ROLE)
+                .requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority("ROLE_ADMIN")
+                .requestMatchers(HttpMethod.POST,"/admin/**").hasAnyAuthority("ROLE_ADMIN")
         		// tutti gli utenti autenticati possono accere alle pagine rimanenti 
                 .anyRequest().authenticated()
                 // LOGIN: qui definiamo il login

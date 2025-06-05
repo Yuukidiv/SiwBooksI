@@ -32,5 +32,8 @@ public class AuthorService {
 		this.authorRepository.delete(author);
 	}
 	
+	public boolean existsByNameAndSurnameAndDateOfBirth(String name, String surname, java.time.LocalDate dateOfBirth) {
+		return authorRepository.existsByNameAndSurnameAndDateOfBirth(name, surname, dateOfBirth);
+	}
 
 }

@@ -17,7 +17,9 @@ public class Author {
 	private String nationality;
 	@Column(columnDefinition = "TEXT") 
 	private String description;
-	//private String fotografia;
+	
+	@OneToMany(mappedBy="author", cascade = CascadeType.ALL)
+	private List<Photo> photos;
 	
 	@ManyToMany(mappedBy = "authors")
 	private List<Book> books;

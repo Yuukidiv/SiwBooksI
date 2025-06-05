@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <title th:text="'Libro - ' + ${book.title}">Dettagli Libro</title>
@@ -37,9 +38,11 @@
                     <p th:text="${book.description}">Nessuna descrizione disponibile.</p>
 
                     <!-- Pulsanti azione -->
-                    <a th:href="@{'/edit/book/' + ${book.id}}" class="btn btn-outline-primary me-2">Modifica libro</a>
+					<div sec:authorize="hasRole('ADMIN')">	
+                    <a th:href="@{'/admin/edit/book/' + ${book.id}}" class="btn btn-outline-primary me-2">Modifica libro</a>
 					<a th:href="@{'/admin/deleteBook/' + ${book.id}}" class="btn btn-outline-danger me-2">Cancella il libro</a>
-                    <a th:href="@{'/book/addReview/' + ${book.id}}" class="btn btn-success">Scrivi una recensione</a>
+					</div>
+					<a th:href="@{'/book/addReview/' + ${book.id}}" class=" mt-2 btn btn-success">Scrivi una recensione</a>
                 </div>
             </div>
 
@@ -62,6 +65,7 @@
                         Nome recensore
                     </p>
                     <p th:text="${review.text}">Testo recensione</p>
+					<div sec:authorize="hasRole('ADMIN')">	
                     <form th:action="@{'/admin/delete/review/' + ${review.id}}" method="post" class="mt-2">
                         <input type="hidden" name="bookId" th:value="${book.id}" />
                         <button type="submit" class="btn btn-danger btn-sm"
@@ -69,6 +73,7 @@
                             Elimina recensione
                         </button>
                     </form>
+					</div>
                 </div>
             </div>
         </div>

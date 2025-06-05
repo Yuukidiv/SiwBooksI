@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import it.uniroma3.siw.model.Credentials;
 
 import it.uniroma3.siw.model.User;
-
+import it.uniroma3.siw.service.AuthorService;
+import it.uniroma3.siw.service.BookService;
 import it.uniroma3.siw.service.CredentialsService;
 import it.uniroma3.siw.service.UserService;
 
@@ -32,6 +33,13 @@ public class AuthenticationController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private AuthorService authorService;
+	
+	@Autowired
+	private BookService bookService;
+	
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -67,6 +75,8 @@ public class AuthenticationController {
 	public String index(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication instanceof AnonymousAuthenticationToken) {
+			model.addAttribute("authors", authorService.getAllAuthors());
+			model.addAttribute("books", bookService.getAllBooks());
 	        return "homepage.html";
 		}
 		else {		

@@ -1,85 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Nuovo Libro</title>
-    <style>
-        .author-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            width: 300px;
-        }
-        .author-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    </style>
-    <script>
-        function moveAuthor(id, fromListId, toListId) {
-            const from = document.getElementById(fromListId);
-            const to = document.getElementById(toListId);
-            const authorDiv = document.getElementById("author-" + id);
-            from.removeChild(authorDiv);
-            to.appendChild(authorDiv);
+	<title>Nuovo Libro</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script>
+		function moveAuthor(id, fromListId, toListId) {
+			const from = document.getElementById(fromListId);
+			const to = document.getElementById(toListId);
+			const authorDiv = document.getElementById("author-" + id);
+			from.removeChild(authorDiv);
+			to.appendChild(authorDiv);
 
-            // Cambia il pulsante da Aggiungi a Rimuovi o viceversa
-            const button = authorDiv.querySelector("button");
-            if (fromListId === "availableAuthors") {
-                button.innerText = "Rimuovi";
-                button.onclick = () => moveAuthor(id, "selectedAuthors", "availableAuthors");
-                authorDiv.querySelector("input").disabled = false;
-            } else {
-                button.innerText = "Aggiungi";
-                button.onclick = () => moveAuthor(id, "availableAuthors", "selectedAuthors");
-                authorDiv.querySelector("input").disabled = true;
-            }
-        }
+			const button = authorDiv.querySelector("button");
+			if (fromListId === "availableAuthors") {
+				button.innerText = "Rimuovi";
+				button.className = "btn btn-danger btn-sm";
+				button.onclick = () => moveAuthor(id, "selectedAuthors", "availableAuthors");
+				authorDiv.querySelector("input").disabled = false;
+			} else {
+				button.innerText = "Aggiungi";
+				button.className = "btn btn-success btn-sm";
+				button.onclick = () => moveAuthor(id, "availableAuthors", "selectedAuthors");
+				authorDiv.querySelector("input").disabled = true;
+			}
+		}
 
-        function selectAll() {
-            // Assicura che gli autori selezionati siano attivi al submit
-            document.querySelectorAll('#selectedAuthors input[name="authorIds"]').forEach(input => {
-                input.disabled = false;
-            });
-        }
-    </script>
+		function selectAll() {
+			document.querySelectorAll('#selectedAuthors input[name="authorIds"]').forEach(input => {
+				input.disabled = false;
+			});
+		}
+	</script>
 </head>
+
 <body>
-<h1>Aggiungi un nuovo Libro</h1>
+	<nav th:replace="fragments/base.html :: navbar"></nav>
+	<div class="container mt-5 mb-5" style="max-width: 800px;">
+		<div th:if="${error}" class="alert alert-danger" role="alert">
+			<span th:text="${error}">The author already exists in the system</span>
+		</div>
+		<h1 class="mb-4">Aggiungi un nuovo Libro</h1>
 
-<form th:action="@{/book}" method="POST" enctype="multipart/form-data" th:object="${book}" onsubmit="selectAll()">
-    <div>
-        Titolo: <input type="text" th:field="*{title}" required />
-    </div>
-    <div>
-        Anno pubblicazione: <input type="number" th:field="*{dateOfPublication}" required />
-    </div>
-    <div>
-        Descrizione: <input type="text" th:field="*{description}" />
-    </div>
-    <div>
-        Immagine: <input type="file" name="imageFile" accept="image/*" />
-    </div>
+		<form th:action="@{/book}" method="POST" enctype="multipart/form-data" th:object="${book}"
+			class="p-4 border rounded shadow-sm bg-light" onsubmit="selectAll()">
+			<div class="mb-3">
+				<label class="form-label">Titolo</label>
+				<input type="text" th:field="*{title}" class="form-control" required />
+			</div>
 
-    <h3>Autori selezionati</h3>
-    <div id="selectedAuthors" class="author-list">
-        <!-- inizialmente vuoto -->
-    </div>
+			<div class="mb-3">
+				<label class="form-label">Anno di pubblicazione</label>
+				<input type="number" th:field="*{dateOfPublication}" class="form-control" required />
+			</div>
 
-    <h3>Autori disponibili</h3>
-    <div id="availableAuthors" class="author-list">
-        <div th:each="author : ${authors}" th:id="'author-' + ${author.id}" class="author-item">
-            <span th:text="${author.name + ' ' + author.surname}"></span>
-            <input type="hidden" name="authorIds" th:value="${author.id}" disabled />
-            <button type="button" th:onclick="'moveAuthor(' + ${author.id} + ', \'availableAuthors\', \'selectedAuthors\')'">Aggiungi</button>
-        </div>
-    </div>
+			<div class="mb-3">
+				<label class="form-label">Descrizione</label>
+				<textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+			</div>
 
-    <div style="margin-top: 20px;">
-        <button type="submit">Conferma</button>
-    </div>
-</form>
+			<div class="mb-3">
+				<label class="form-label">Immagine</label>
+				<input type="file" name="imageFile" class="form-control" accept="image/*" />
+			</div>
+
+			<div class="row">
+				<div class="col-md-6">
+					<h5>Autori selezionati</h5>
+					<div id="selectedAuthors" class="border rounded p-3" style="min-height: 150px;">
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<h5>Autori disponibili</h5>
+					<div id="availableAuthors" class="border rounded p-3">
+						<div th:each="author : ${authors}" th:id="'author-' + ${author.id}"
+							class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+							<span th:text="${author.name + ' ' + author.surname}"></span>
+							<div class="d-flex align-items-center gap-2">
+								<input type="hidden" name="authorIds" th:value="${author.id}" disabled />
+								<button type="button" class="btn btn-success btn-sm"
+									th:onclick="'moveAuthor(' + ${author.id} + ', \'availableAuthors\', \'selectedAuthors\')'">
+									Aggiungi
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="mt-4">
+				<button type="submit" class="btn btn-primary">Conferma</button>
+			</div>
+		</form>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

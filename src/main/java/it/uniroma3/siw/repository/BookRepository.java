@@ -18,5 +18,7 @@ public interface BookRepository extends CrudRepository<Book, Long> {
 		            (:dateOfPublication IS NULL OR b.dateOfPublication = :dateOfPublication)
 		    """)
 		List<Book> searchBooks(@Param("title") String title, @Param("dateOfPublication") Integer dateOfPublication);
+
+	public boolean existsByTitleAndDateOfPublication(String title, Integer dateOfPublication);
 }
 

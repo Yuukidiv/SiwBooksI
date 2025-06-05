@@ -1,20 +1,25 @@
 package it.uniroma3.siw.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import it.uniroma3.siw.controller.validator.BookValidator;
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
+import it.uniroma3.siw.model.Photo;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
+import it.uniroma3.siw.service.PhotoService;
 
 @Controller
 public class BookController {
@@ -23,6 +28,10 @@ public class BookController {
 	private BookService bookService;
 	@Autowired
 	private AuthorService authorService;
+	@Autowired 
+	private PhotoService photoService;
+	@Autowired
+	private BookValidator bookValidator;
 
 	@GetMapping("/books")
 	public String getBooks(Model model) {
@@ -52,26 +61,43 @@ public class BookController {
 
 	// saving the book in the system with a POST METHOD CALL
 	@PostMapping("/book")
-	public String saveBook(Model model, Book book, @RequestParam("authorIds") List<Long> authorIds ,@RequestParam("imageFile") MultipartFile file) {
-		/*
-		 * System.out.println(">> data pubblicazione: " + book.getDateOfPublication());
-		 */
-		List<Author> selectedAuthors = this.authorService.getAllById(authorIds);
-		book.setAuthors(selectedAuthors);
+	public String saveBook(Model model, Book book,BindingResult bindingResult, 
+			@RequestParam(name ="authorIds", required = false) List<Long> authorIds) {
 		
-		this.bookService.saveBook(book);
-		return "redirect:book/" + book.getId();
+		if (authorIds != null && !authorIds.isEmpty()) {
+	        List<Author> selectedAuthors = authorService.getAllById(authorIds);
+	        book.setAuthors(selectedAuthors);
+	    }
+		
+		this.bookValidator.validate(book, bindingResult);
+		if (!bindingResult.hasErrors()) {
+			this.bookService.saveBook(book); 
+			model.addAttribute("book", book);
+			return "redirect:book/"+book.getId();
+		} else {
+			model.addAttribute("error", "The book already exists in the system");
+			return "admin/formNewBook.html"; 
+		}
+		
 	}
 
-	@GetMapping("/edit/book/{id}")
+	@GetMapping("/admin/edit/book/{id}")
 	public String editBook(Model model, @PathVariable Long id) {
-		model.addAttribute("book", this.bookService.getBookById(id));
+		Book book = this.bookService.getBookById(id);
+		model.addAttribute("book", book);
+		// dovrei passare autori gia presenti e differenza con gli altri 
+		model.addAttribute("bookAuthors", book.getAuthors());
+		// qui dovrei passare magari un metodo nel service che mi ritorna la differenza tra i due
 		model.addAttribute("authors", this.authorService.getAllAuthors());
 		return "editBook.html";
 	}
 
 	@PostMapping("/edited/book")
-	public String saveEditBook(Book book, Model model) {
+	public String saveEditBook(Book book, Model model,  @RequestParam(name ="authorIds", required = false) List<Long> authorIds ) {
+		if (authorIds != null && !authorIds.isEmpty()) {
+	        List<Author> selectedAuthors = authorService.getAllById(authorIds);
+	        book.setAuthors(selectedAuthors);
+	    }
 		this.bookService.saveBook(book);
 		return "redirect:/book/" + book.getId();
 	}

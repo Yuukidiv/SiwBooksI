@@ -1,39 +1,119 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>New Author</title>
+	<title>Nuovo Autore</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+	<script>
+		function moveBook(id, fromListId, toListId) {
+			const from = document.getElementById(fromListId);
+			const to = document.getElementById(toListId);
+			const bookDiv = document.getElementById("book-" + id);
+			from.removeChild(bookDiv);
+			to.appendChild(bookDiv);
+
+			const button = bookDiv.querySelector("button");
+			if (fromListId === "availableBooks") {
+				button.innerText = "Remove";
+				button.className = "btn btn-danger btn-sm";
+				button.onclick = () => moveBook(id, "selectedBooks", "availableBooks");
+				bookDiv.querySelector("input").disabled = false;
+			} else {
+				button.innerText = "Add";
+				button.className = "btn btn-success btn-sm";
+				button.onclick = () => moveBook(id, "availableBooks", "selectedBooks");
+				bookDiv.querySelector("input").disabled = true;
+			}
+		}
+
+		function selectAll() {
+			document.querySelectorAll('#selectedBooks input[name="bookIds"]').forEach(input => {
+				input.disabled = false;
+			});
+		}
+	</script>
 </head>
 
 <body>
-	<h1>Aggiungi un nuovo Autore nel Sistema, da aggiungere FOTO E LISTA LIBRI MAYBE SELEZIONA</h1>
-	<!--vado al link book method post con il libro che gli passo per questo posso usare il campo Book book poi maybe-->
-	<form th:action="@{/author}" method="POST" th:object="${author}">
-		<div>
-			Nome Autore: <span><input required type="text" th:field="${author.name}" /></span>
+	<nav th:replace="fragments/base.html :: navbar"></nav>
+	<div class="container mt-5 mb-5" style="max-width: 800px;">
+		<div th:if="${error}" class="alert alert-danger" role="alert">
+			<span th:text="${error}">The author already exists in the system</span>
 		</div>
-		<div>
-			Cognome Autore: <span><input required type="text" th:field="${author.surname}"></span>
-		</div>
-		<div>
-			Nazionalità' Autore: <span><input required type="text" th:field="${author.nationality}"></span>
-		</div>
-		<div>
-			Anno di Nascita: <span><input required type="date" th:field="${author.dateOfBirth}" /></span>
-		</div>
-		<div>
-			Anno di Morte (se ci sta): <span><input type="date" th:field="${author.dateOfDeath}" /></span>
-		</div>
-		<div>
-			Descrizione Autore: <span><input type="text" th:field="${author.description}"/></span>
-		</div>
-		<!--<div>
-			Foto in futuro: <span><input type="url" th:field="${movie.urlImage}" /></span>
-		</div>-->
-		<div>
-			<span><button type="submit">Conferma</button></span>
-		</div>
-	</form>
+		<h1 class="mb-4">Add a new Author</h1>
+
+		<form th:action="@{/author}" method="POST" th:object="${author}" class="p-4 border rounded shadow-sm bg-light">
+			<div class="mb-3">
+				<label class="form-label">Name Author</label>
+				<input type="text" class="form-control" th:field="*{name}" required />
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Surname Author</label>
+				<input type="text" class="form-control" th:field="*{surname}" required />
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Nationality</label>
+				<input type="text" class="form-control" th:field="*{nationality}" required />
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Date of Birth</label>
+				<input type="date" class="form-control" th:field="*{dateOfBirth}" required />
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Date of Death (optional)</label>
+				<input type="date" class="form-control" th:field="*{dateOfDeath}" />
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Description</label>
+				<input type="text" class="form-control" th:field="*{description}" />
+			</div>
+
+			<!-- Futuro: campo immagine
+			<div class="mb-3">
+				<label class="form-label">Foto</label>
+				<input type="url" class="form-control" th:field="*{urlImage}" />
+			</div>
+			-->
+			<div class="row">
+				<div class="col-md-6">
+					<h5>Books Selected</h5>
+					<div id="selectedBooks" class="border rounded p-3" style="min-height: 150px;">
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<h5>Available Books</h5>
+					<div id="availableBooks" class="border rounded p-3">
+						<div th:each="book : ${books}" th:id="'book-' + ${book.id}"
+							class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+							<span th:text="${book.title + ' (' + book.dateOfPublication + ')'}"></span>
+							<div class="d-flex align-items-center gap-2">
+								<input type="hidden" name="bookIds" th:value="${book.id}" disabled />
+								<button type="button" class="btn btn-success btn-sm"
+									th:onclick="'moveBook(' + ${book.id} + ', \'availableBooks\', \'selectedBooks\')'">
+									Add
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="text-end">
+				<button type="submit" class="btn btn-primary">Confirm</button>
+			</div>
+		</form>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+		crossorigin="anonymous"></script>
 </body>
 
 </html>

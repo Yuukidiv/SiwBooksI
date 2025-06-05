@@ -21,7 +21,8 @@ public class Book {
 	@OneToMany(mappedBy = "reviewedBook", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Review> reviews;
 	
-	// private String imageFilename;
+	@OneToMany(mappedBy="book", cascade = CascadeType.ALL)
+	private List<Photo> photos;
 	
 	public Long getId() {
 		return id;
