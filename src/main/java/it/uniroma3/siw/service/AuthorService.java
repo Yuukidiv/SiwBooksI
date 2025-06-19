@@ -1,6 +1,8 @@
 package it.uniroma3.siw.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,12 @@ public class AuthorService {
 	
 	public boolean existsByNameAndSurnameAndDateOfBirth(String name, String surname, java.time.LocalDate dateOfBirth) {
 		return authorRepository.existsByNameAndSurnameAndDateOfBirth(name, surname, dateOfBirth);
+	}
+
+	public List<Author> findRandomAuthors(int count) {
+		 List<Author> allAuthors = (List<Author>) authorRepository.findAll();
+		 Collections.shuffle(allAuthors);
+		 return allAuthors.stream().limit(count).collect(Collectors.toList());
 	}
 
 }

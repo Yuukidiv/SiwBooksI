@@ -17,11 +17,23 @@ public class User {
 	@OneToMany(mappedBy = "reviewedByUser")
 	private List<Review> writtenReviews;
 	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private Photo photo;
+	
+	
 	public List<Review> getWrittenReviews() {
 		return writtenReviews;
 	}
 
-	public void setWrittenRewiews(List<Review> writtenReviews) {
+	public Photo getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(Photo photo) {
+		this.photo = photo;
+	}
+
+	public void setWrittenReviews(List<Review> writtenReviews) {
 		this.writtenReviews = writtenReviews;
 	}
 

@@ -1,6 +1,6 @@
 package it.uniroma3.siw.service;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +14,17 @@ public class PhotoService {
 	@Autowired
     private PhotoRepository photoRepository;
 
+	// provo per ora con gli autori magari
     public void savePhoto(Photo photo) {
         photoRepository.save(photo);
     }
 
-    public Optional<Photo> getPhoto(Long id) {
-        return photoRepository.findById(id);
-    }
-    
+    public Photo findById(Long id) {
+		return this.photoRepository.findById(id).orElse(null);
+	}
+	
+	public List<Photo> findAll(){
+		return (List<Photo>) this.photoRepository.findAll();
+	}
     
 }

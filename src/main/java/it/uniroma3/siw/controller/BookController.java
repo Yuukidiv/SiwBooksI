@@ -20,6 +20,7 @@ import it.uniroma3.siw.model.Photo;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
 import it.uniroma3.siw.service.PhotoService;
+import jakarta.transaction.Transactional;
 
 @Controller
 public class BookController {
@@ -39,6 +40,7 @@ public class BookController {
 		return "books.html";
 	}
 
+	@Transactional
 	@GetMapping("/book/{id}")
 	public String getBook(@PathVariable Long id, Model model) {
 		Book book = this.bookService.getBookById(id);
@@ -59,10 +61,10 @@ public class BookController {
 
 	}
 
-	// saving the book in the system with a POST METHOD CALL
+	// SAVING BOOK
 	@PostMapping("/book")
-	public String saveBook(Model model, Book book,BindingResult bindingResult, 
-			@RequestParam(name ="authorIds", required = false) List<Long> authorIds) {
+	public String saveBook(Model model, Book book, BindingResult bindingResult, @RequestParam("photo") MultipartFile photo,
+			@RequestParam(name ="authorIds", required = false) List<Long> authorIds) throws IOException {
 		
 		if (authorIds != null && !authorIds.isEmpty()) {
 	        List<Author> selectedAuthors = authorService.getAllById(authorIds);
@@ -70,8 +72,12 @@ public class BookController {
 	    }
 		
 		this.bookValidator.validate(book, bindingResult);
-		if (!bindingResult.hasErrors()) {
+		if (book!=null) {
 			this.bookService.saveBook(book); 
+			Photo bookPhoto = new Photo();
+            bookPhoto.setData(photo.getBytes());
+            bookPhoto.setBook(book);
+            this.photoService.savePhoto(bookPhoto);
 			model.addAttribute("book", book);
 			return "redirect:book/"+book.getId();
 		} else {

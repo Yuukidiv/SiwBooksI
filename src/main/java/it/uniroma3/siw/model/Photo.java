@@ -4,56 +4,41 @@ import jakarta.persistence.*;
 
 @Entity
 public class Photo {
+	
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    private String fileName;
-
-    private String contentType; // es. "image/jpeg"
-
     @Lob
-    @Column(name = "image_data", columnDefinition = "BYTEA") // PostgreSQL
-    private byte[] imageData;
+    @Basic(optional = false)
+    private byte[] data;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = true) // Aggiungi esplicitamente
+    @JoinColumn(name = "author_id", nullable = true)
     private Author author;
 
     @ManyToOne
-    @JoinColumn(name = "book_id", nullable = true) // Anche questo
+    @JoinColumn(name = "book_id", nullable = true) 
     private Book book;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true) 
+    private User user;
 
 	public Long getId() {
 		return id;
 	}
 
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	public byte[] getImageData() {
-		return imageData;
-	}
-
-	public void setImageData(byte[] imageData) {
-		this.imageData = imageData;
 	}
 
 	public Author getAuthor() {
@@ -72,6 +57,14 @@ public class Photo {
 		this.book = book;
 	}
 
-    // Getters e setters
-    
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+	
+
 }

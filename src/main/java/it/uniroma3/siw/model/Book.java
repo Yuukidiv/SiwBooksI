@@ -21,8 +21,8 @@ public class Book {
 	@OneToMany(mappedBy = "reviewedBook", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Review> reviews;
 	
-	@OneToMany(mappedBy="book", cascade = CascadeType.ALL)
-	private List<Photo> photos;
+	@OneToOne(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private Photo photo;
 	
 	public Long getId() {
 		return id;
@@ -71,5 +71,17 @@ public class Book {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public Photo getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(Photo photo) {
+		this.photo = photo;
+	}
+
+
+	
+	
 	
 }

@@ -17,9 +17,8 @@
 			<div class="row">
 				<!-- Foto autore -->
 				<div class="col-md-4 text-center">
-					<img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1733692549i/217171544.jpg"
-						class="card-img-top book-img" alt="Autore foto"
-						onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'">
+					<img th:src="@{'/photo/' + ${photo.id}}" class="card-img-top book-img" alt="Foto Autore"
+						onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'" />
 				</div>
 
 				<!-- Info autore -->

@@ -1,6 +1,8 @@
 package it.uniroma3.siw.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,12 @@ public class BookService {
 
 	public boolean existsByTitleAndDateOfPublication(String title, Integer dateOfPublication) {
 		return bookRepository.existsByTitleAndDateOfPublication(title, dateOfPublication);
+	}
+
+	public List<Book> findRandomBooks(int count) {
+		List<Book> allBooks = (List<Book>) bookRepository.findAll();
+	    Collections.shuffle(allBooks);
+	    return allBooks.stream().limit(count).collect(Collectors.toList());
 	}
 	
 	

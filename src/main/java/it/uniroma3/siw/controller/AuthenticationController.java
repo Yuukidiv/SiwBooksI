@@ -1,6 +1,8 @@
 package it.uniroma3.siw.controller;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,10 +18,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.siw.model.Credentials;
-
+import it.uniroma3.siw.model.Photo;
 import it.uniroma3.siw.model.User;
+import it.uniroma3.siw.model.Book;
+import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
 import it.uniroma3.siw.service.CredentialsService;
@@ -75,8 +80,10 @@ public class AuthenticationController {
 	public String index(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication instanceof AnonymousAuthenticationToken) {
-			model.addAttribute("authors", authorService.getAllAuthors());
-			model.addAttribute("books", bookService.getAllBooks());
+			List<Book> suggestedBooks = bookService.findRandomBooks(6);
+			List<Author> suggestedAuthors = authorService.findRandomAuthors(6);
+			model.addAttribute("suggestedBooks", suggestedBooks);
+	        model.addAttribute("suggestedAuthors", suggestedAuthors);
 	        return "homepage.html";
 		}
 		else {		
@@ -116,13 +123,7 @@ public class AuthenticationController {
             credentials.setUser(user);
             credentialsService.saveCredentials(credentials);
             model.addAttribute("user", user);
-			/*
-			 * Authentication authentication = new UsernamePasswordAuthenticationToken(
-			 * credentials.getUsername(), psw // <- la password in chiaro inserita
-			 * dall’utente, non quella codificata ); Authentication auth =
-			 * authenticationManager.authenticate(authentication);
-			 * SecurityContextHolder.getContext().setAuthentication(auth);
-			 */
+
             
             return "redirect:/login";
         }
@@ -153,14 +154,6 @@ public class AuthenticationController {
 	    
 	    Credentials credenziali = credentialsService.getCredentials(userDetails.getUsername());
 	    User utente = credenziali.getUser();
-	    System.out.println("=== DEBUG: Salvataggio Profilo Utente ===");
-	    System.out.println("Username: " + credenziali.getUsername());
-	    System.out.println("Ruolo: " + credenziali.getRole());
-	    System.out.println("Password: " + credenziali.getPassword()); 
-	    
-	    System.out.println("Nome: " + utente.getName());
-	    System.out.println("Cognome: " + utente.getSurname());
-	    System.out.println("Email: " + utente.getEmail());
 		model.addAttribute("credentials", credenziali);
 		model.addAttribute("user", utente);
 		
@@ -169,16 +162,6 @@ public class AuthenticationController {
 	
 	@PostMapping("/profile/editProfile")
 	public String saveEditProfile(Model model, User user, Credentials credentials) {
-	    // DEBUG PRINTS
-	    System.out.println("=== DEBUG: Salvataggio Profilo Utente ===");
-	    System.out.println("Username: " + credentials.getUsername());
-	    System.out.println("Ruolo: " + credentials.getRole());
-	    System.out.println("Password: " + credentials.getPassword()); 
-	    
-	    System.out.println("Nome: " + user.getName());
-	    System.out.println("Cognome: " + user.getSurname());
-	    System.out.println("Email: " + user.getEmail());
-
 	    // Associa utente a credenziali
 	    credentials.setUser(user);
 	    this.userService.saveUser(user);

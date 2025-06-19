@@ -64,9 +64,8 @@
 			<div class="col" th:each="book : ${books}">
 				<div class="card  shadow-sm card-hover">
 					<a th:href="@{'/book/' + ${book.id}}" class="card-link">
-						<img src="https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1733692549i/217171544.jpg"
-							class="card-img-top book-img" alt="Copertina libro"
-							onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'">
+						<img th:src="@{'/photo/' + ${book.photo.id}}" class="card-img-top book-img" alt="Foto Autore"
+												onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'" />
 						<div class="card-body d-flex flex-column">
 							<h5 class="card-title mb-1" th:text="${book.title}">Titolo</h5>
 							<p class="card-text mb-0" th:if="${#lists.isEmpty(book.authors)}">Autore sconosciuto</p>
