@@ -18,23 +18,38 @@
 			<div class="row">
 				<!-- Copertina -->
 				<div class="col-md-4 text-center">
-					<img th:src="${book.photo != null} ? @{'/photo/' + ${book.photo.id}} : @{/images/defaultProfile.jpg}"  class="img-fluid rounded shadow-sm" />
+					<img th:src="${book.photo != null} ? @{'/photo/' + ${book.photo.id}} : @{/images/defaultProfile.jpg}"
+						class="img-fluid rounded shadow-sm" />
 				</div>
 
 				<!-- Info Libro -->
 				<div class="col-md-8">
 					<h1 th:text="${book.title}" class="mb-3">Titolo del libro</h1>
-					<h5 class="text-muted">
-						<span th:each="author : ${authors}" class="d-block">
-							<a th:href="@{'/author/' + ${author.id}}" th:text="${author.name + ' ' + author.surname}"
-								class="text-decoration-none text-dark">
-								Autore
-							</a>
-						</span>
-					</h5>
 					<p><strong>Anno di pubblicazione:</strong> <span th:text="${book.dateOfPublication}">2000</span></p>
 					<p><strong>Descrizione:</strong></p>
 					<p th:text="${book.description}">Nessuna descrizione disponibile.</p>
+					<div class="mt-4">
+						<h4>Autori del libro</h4>
+						<div class="row justify-content-start">
+							<div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3" th:each="author : ${authors}">
+								<div class="card text-center shadow-sm h-100 border-0">
+
+									<!-- Foto profilo autore -->
+									<img th:src="${author.photo != null} ? @{'/photo/' + ${author.photo.id}} : @{/images/defaultProfile.jpg}"
+										alt="Foto autore" class="card-img-top rounded-top"
+										style="height: 120px; object-fit: cover;" />
+
+									<div class="card-body p-2">
+										<h6 class="card-title mb-0">
+											<a th:href="@{'/author/' + ${author.id}}"
+												th:text="${author.name + ' ' + author.surname}"
+												class="text-decoration-none text-dark small"></a>
+										</h6>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
 					<!-- Pulsanti azione -->
 					<div sec:authorize="hasRole('ADMIN')">
