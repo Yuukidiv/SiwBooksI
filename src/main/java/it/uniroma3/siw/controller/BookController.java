@@ -1,6 +1,7 @@
 package it.uniroma3.siw.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,12 +90,15 @@ public class BookController {
 
 	@GetMapping("/admin/edit/book/{id}")
 	public String editBook(Model model, @PathVariable Long id) {
-		Book book = this.bookService.getBookById(id);
-		model.addAttribute("book", book);
-		// dovrei passare autori gia presenti e differenza con gli altri 
-		model.addAttribute("bookAuthors", book.getAuthors());
-		// qui dovrei passare magari un metodo nel service che mi ritorna la differenza tra i due
-		model.addAttribute("authors", this.authorService.getAllAuthors());
+		Book book = bookService.getBookById(id);
+	    List<Author> allAuthors = authorService.getAllAuthors();
+	    List<Author> selectedAuthors = book.getAuthors();
+	    List<Author> availableAuthors = new ArrayList<>(allAuthors);
+	    availableAuthors.removeAll(selectedAuthors);
+
+	    model.addAttribute("book", book);
+	    model.addAttribute("selectedAuthors", selectedAuthors);
+	    model.addAttribute("availableAuthors", availableAuthors);
 		return "editBook.html";
 	}
 
@@ -113,10 +117,8 @@ public class BookController {
 	    book.setDateOfPublication(date);
 	    book.setDescription(description);
 
-	    if (authorIds != null && !authorIds.isEmpty()) {
-	        List<Author> authors = authorService.getAllById(authorIds);
-	        book.setAuthors(authors);
-	    }
+	    List<Author> authors = (authorIds != null) ? authorService.getAllById(authorIds) : new ArrayList<>();
+	    book.setAuthors(authors);
 
 	    if (photoFile != null && !photoFile.isEmpty()) {
 	        // Se c'è una foto vecchia, la elimini

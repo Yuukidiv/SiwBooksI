@@ -62,19 +62,31 @@
 
 			<div class="mb-3">
 				<label for="file" class="form-label">Immagine (copertina)</label>
-				<input type="file" id="photo" name="photo" accept="image/*" class="form-control"/>
+				<input type="file" id="photo" name="photo" accept="image/*" class="form-control" />
 			</div>
 			<!--parte nuova prova -->
 			<div class="row">
 				<div class="col-md-6">
 					<h5>Autori selezionati</h5>
-					<div id="selectedAuthors" class="border rounded p-3" style="min-height: 150px;"></div>
+					<div id="selectedAuthors" class="border rounded p-3" style="min-height: 150px;">
+						<div th:each="author : ${selectedAuthors}" th:id="'author-' + ${author.id}"
+							class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+							<span th:text="${author.name + ' ' + author.surname}"></span>
+							<div class="d-flex align-items-center gap-2">
+								<input type="hidden" name="authorIds" th:value="${author.id}" />
+								<button type="button" class="btn btn-danger btn-sm"
+									th:onclick="'moveAuthor(' + ${author.id} + ', \'selectedAuthors\', \'availableAuthors\')'">
+									Rimuovi
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<div class="col-md-6">
 					<h5>Autori disponibili</h5>
 					<div id="availableAuthors" class="border rounded p-3">
-						<div th:each="author : ${authors}" th:id="'author-' + ${author.id}"
+						<div th:each="author : ${availableAuthors}" th:id="'author-' + ${author.id}"
 							class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
 							<span th:text="${author.name + ' ' + author.surname}"></span>
 							<div class="d-flex align-items-center gap-2">
@@ -88,8 +100,7 @@
 					</div>
 				</div>
 			</div>
-
-			<button type="submit" class="btn btn-primary">Salva Modifiche</button>
+			<button type="submit" class="btn btn-primary" onclick="selectAll()">Salva Modifiche</button>
 		</form>
 	</div>
 
