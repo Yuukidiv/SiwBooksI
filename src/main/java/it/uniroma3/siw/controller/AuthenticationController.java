@@ -169,17 +169,45 @@ public class AuthenticationController {
 	@Transactional
 	@PostMapping("/profile/editProfile")
 	public String saveEditProfile(@ModelAttribute("user") User user,
-		    @ModelAttribute("credentials") Credentials credentials,
-		    Model model) throws IOException {
-	    // Associa utente a credenziali
+	                              @ModelAttribute("credentials") Credentials credentials,
+	                              @RequestParam(name = "photoFile", required = false) MultipartFile photoFile,
+	                              Model model) throws IOException {
 	    credentials.setUser(user);
-	    this.userService.saveUser(user);
-	   
-        // le credenziali non vengono cambiate in questo caso credentialsService.saveCredentials(credentials);
-        model.addAttribute("success", "profilo aggiornato modificato");
+
+	    // Recupera lo user esistente (per non perdere la foto)
+	    User existingUser = userService.getUser(user.getId());
+
+	    // Mantieni la foto precedente se non ne è stata caricata una nuova
+	    if (photoFile != null && !photoFile.isEmpty()) {
+	        // Elimina la vecchia, se esiste
+	        Photo oldPhoto = existingUser.getPhoto();
+	        if (oldPhoto != null) {
+	            photoService.deletePhoto(oldPhoto);
+	        }
+
+	        // Salva lo user temporaneamente per garantire uno stato managed
+	        userService.saveUser(user);
+
+	        // Crea e salva nuova foto
+	        Photo newPhoto = new Photo();
+	        newPhoto.setData(photoFile.getBytes());
+	        newPhoto.setUser(user);
+	        photoService.savePhoto(newPhoto);
+
+	        // Associa la nuova foto
+	        user.setPhoto(newPhoto);
+	    } else {
+	        // Nessuna nuova foto: mantieni la vecchia
+	        user.setPhoto(existingUser.getPhoto());
+	    }
+
+	    userService.saveUser(user);
+	    model.addAttribute("success", "Profilo aggiornato correttamente");
 
 	    return "redirect:/profile";
 	}
+
+
 	
 	@GetMapping("/profile/modifyPassword") 
 	public String editPsw(Model model) {
