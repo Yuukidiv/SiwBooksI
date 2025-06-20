@@ -19,7 +19,7 @@ public class Author {
 	private String description;
 	
 	@OneToOne(mappedBy="author", cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private Photo photos;
+	private Photo photo;
 	
 	@ManyToMany(mappedBy = "authors")
 	private List<Book> books;
@@ -88,12 +88,12 @@ public class Author {
 		this.description = description;
 	}
 
-	public Photo getPhotos() {
-		return photos;
+	public Photo getPhoto() {
+		return photo;
 	}
 
-	public void setPhotos(Photo photos) {
-		this.photos = photos;
+	public void setPhoto(Photo photos) {
+		this.photo = photos;
 	}
 	
 	

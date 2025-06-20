@@ -13,7 +13,7 @@
 	<div class="container mt-5">
 		<div class="row justify-content-center">
 			<div class="col-md-8">
-				<form th:action="@{/admin/editedAuthor}" th:object="${author}" method="post"
+				<form th:action="@{/admin/editedAuthor}" th:object="${author}" method="post" enctype="multipart/form-data"
 					class="p-4 border rounded shadow-sm bg-light">
 					<h2 class="text-center mb-4">Modifica Autore</h2>
 
@@ -55,6 +55,10 @@
 						<label class="form-label">Descrizione</label>
 						<textarea class="form-control" rows="4" th:field="*{description}"
 							placeholder="Biografia dell'autore..."></textarea>
+					</div>
+					<div class="mb-3">
+						<label for="file" class="form-label">Immagine (copertina)</label>
+						<input type="file" id="photoFile" name="photoFile" accept="image/*" class="form-control" />
 					</div>
 
 					<div class="text-center">

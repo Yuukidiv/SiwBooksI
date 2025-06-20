@@ -1,14 +1,17 @@
 package it.uniroma3.siw.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,7 +55,7 @@ public class AuthorController {
 		Author author = this.authorService.getAuthorById(id);
 		if(author!=null) {
 			model.addAttribute("author", author);
-			model.addAttribute("photo", author.getPhotos());
+			model.addAttribute("photo", author.getPhoto());
 			return "author.html";
 		}
 		
@@ -79,44 +82,54 @@ public class AuthorController {
 		return "admin/formNewAuthor.html";
 	}
 	
-	// save the author by saving it and then redirecting to his new page I guess
+	// save the author by saving it and then redirecting to his new page I gues
+	
 	@PostMapping("/author")
-	public String saveAuthor(Model model, @RequestParam("photo") MultipartFile photo, Author author, BindingResult bindingResult, 
-			@RequestParam(name="bookIds", required = false ) List<Long> bookIds) {
-		
-		if (bookIds != null && !bookIds.isEmpty()) {
+	public String saveAuthor(Model model,
+	                         @RequestParam("photoFile") MultipartFile photoFile,
+	                         @ModelAttribute Author author,
+	                         BindingResult bindingResult,
+	                         @RequestParam(name = "bookIds", required = false) List<Long> bookIds) {
+
+	    // Validazione
+		System.out.println(">>> Errori nel BindingResult:");
+		bindingResult.getAllErrors().forEach(err -> System.out.println(">>> " + err));
+	    authorValidator.validate(author, bindingResult);
+	    if (bindingResult.hasErrors()) {
+	        model.addAttribute("error", "Errore nella validazione autore");
+	        return "admin/formNewAuthor.html";
+	    }
+
+	    // Libri associati (se presenti)
+	    if (bookIds != null && !bookIds.isEmpty()) {
 	        List<Book> selectedBooks = bookService.getAllById(bookIds);
 	        author.setBooks(selectedBooks);
 	        for (Book b : selectedBooks) {
-	            b.getAuthors().add(author); // lato non proprietario allora devo sincronizzare 
+	            b.getAuthors().add(author);
 	        }
 	    }
-		
-		this.authorValidator.validate(author, bindingResult);
-		if (!bindingResult.hasErrors()) {
-			this.authorService.saveAuthor(author); 
-			if (!photo.isEmpty()) {
-	            try {
-	                Photo authorPhoto = new Photo();
-	                authorPhoto.setData(photo.getBytes());
-	                authorPhoto.setAuthor(author);
-	                this.photoService.savePhoto(authorPhoto);
-	                
-	            } catch (IOException e) {
-	                e.printStackTrace();
-	                model.addAttribute("errorMessage", "Errore nel caricamento della foto");
-	                return "error404.html";
-	            }
+
+	    // Salvo l'autore
+	    authorService.saveAuthor(author); // serve prima per settare id per FK
+
+	    // Foto (se presente)
+	    if (!photoFile.isEmpty()) {
+	        try {
+	            Photo authorPhoto = new Photo();
+	            authorPhoto.setData(photoFile.getBytes());
+	            authorPhoto.setAuthor(author);      // relaziono autore
+	            author.setPhoto(authorPhoto);       // relaziono foto
+	            photoService.savePhoto(authorPhoto);
+	        } catch (IOException e) {
+	            model.addAttribute("errorMessage", "Errore nel caricamento della foto");
+	            return "error404.html";
 	        }
-			
-			model.addAttribute("author", author);
-			return "redirect:author/"+author.getId();
-		} else {
-			model.addAttribute("error", "The author already exists in the system");
-			return "admin/formNewAuthor.html"; 
-		}
+	    }
+
+	    model.addAttribute("author", author);
+	    return "redirect:author/" + author.getId();
 	}
-	
+
 	// controller for editing the author
 	@GetMapping("/admin/author/{id}/edit")
 	public String editAuthor(Model model, @PathVariable Long id) {
@@ -124,12 +137,47 @@ public class AuthorController {
 		model.addAttribute("author", author);
 		return "admin/editAuthor.html";
 	}
-	
-	@PostMapping("/admin/editedAuthor") 
-	public String editedAuthor(Model model, Author author) {
-		this.authorService.saveAuthor(author);
-		return "redirect:/author/" + author.getId();
+	@Transactional
+	@PostMapping("/admin/editedAuthor")
+	public String editedAuthor(@RequestParam("id") Long id,
+	                           @RequestParam("name") String name,
+	                           @RequestParam("surname") String surname,
+	                           @RequestParam("dateOfBirth") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfBirth,
+	                           @RequestParam(name = "dateOfDeath", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateOfDeath,
+	                           @RequestParam("nationality") String nationality,
+	                           @RequestParam("description") String description,
+	                           @RequestParam(name = "photoFile", required = false) MultipartFile photoFile) throws IOException {
+
+	    Author author = authorService.getAuthorById(id);
+
+	    author.setName(name);
+	    author.setSurname(surname);
+	    author.setDateOfBirth(dateOfBirth);
+	    author.setDateOfDeath(dateOfDeath);
+	    author.setNationality(nationality);
+	    author.setDescription(description);
+
+	    if (photoFile != null && !photoFile.isEmpty()) {
+	        // elimina vecchia foto se esiste
+	        Photo oldPhoto = author.getPhoto();
+	        if (oldPhoto != null) {
+	            author.setPhoto(null); // scollega
+	            photoService.deletePhoto(oldPhoto);
+	        }
+
+	        // salva nuova foto
+	        Photo newPhoto = new Photo();
+	        newPhoto.setData(photoFile.getBytes());
+	        newPhoto.setAuthor(author);
+	        photoService.savePhoto(newPhoto);
+
+	        author.setPhoto(newPhoto);
+	    }
+
+	    authorService.saveAuthor(author);
+	    return "redirect:/author/" + author.getId();
 	}
+
 	
 	// when i delete something i need to see if there are foreign keys
 	@Transactional

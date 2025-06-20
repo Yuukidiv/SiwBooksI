@@ -169,30 +169,8 @@ public class AuthenticationController {
 	@Transactional
 	@PostMapping("/profile/editProfile")
 	public String saveEditProfile(@ModelAttribute("user") User user,
-		    @RequestParam("photoFile") MultipartFile photoFile,
 		    @ModelAttribute("credentials") Credentials credentials,
 		    Model model) throws IOException {
-		
-	    if (photoFile != null && !photoFile.isEmpty()) {
-	        // Se c'è una foto vecchia, la elimini
-	        Photo oldPhoto = user.getPhoto();
-	        if (oldPhoto != null) {
-	            user.setPhoto(null); // scollega la vecchia
-	            photoService.deletePhoto(oldPhoto);
-	        }
-
-	        // Salva il libro temporaneamente (per avere ID, stato managed, etc.)
-	        userService.saveUser(user);
-
-	        // Crea e salva nuova foto
-	        Photo newPhoto = new Photo();
-	        newPhoto.setData(photoFile.getBytes());
-	        newPhoto.setUser(user);
-	        photoService.savePhoto(newPhoto);
-
-	        // Aggiorna relazione bidirezionale
-	        user.setPhoto(newPhoto);
-	    }
 	    // Associa utente a credenziali
 	    credentials.setUser(user);
 	    this.userService.saveUser(user);

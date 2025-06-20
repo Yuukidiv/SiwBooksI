@@ -17,11 +17,11 @@ public class Photo {
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "book_id") 
     private Book book;
     
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id") 
     private User user;
 

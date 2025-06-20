@@ -18,8 +18,7 @@
 			<div class="row">
 				<!-- Copertina -->
 				<div class="col-md-4 text-center">
-					<img th:src="@{'/photo/' + ${book.photo.id}}" class="img-fluid rounded shadow-sm" alt="Foto Autore"
-						onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'" />
+					<img th:src="${book.photo != null} ? @{'/photo/' + ${book.photo.id}} : @{/images/defaultProfile.jpg}"  class="img-fluid rounded shadow-sm" />
 				</div>
 
 				<!-- Info Libro -->
