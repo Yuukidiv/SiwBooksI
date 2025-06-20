@@ -30,14 +30,14 @@
 <!-- BOOK SUGGESTIONS -->
 <div class="container my-5">
     <h2 class="text-center mb-4">📚 Libri Consigliati</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-6 g-4">
         <div class="col" th:each="book : ${suggestedBooks}">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
-					<img th:src="@{'/photo/' + ${book.photo.id}}" class="img-fluid rounded shadow-sm" alt="Foto Autore"
+					<img th:src="@{'/photo/' + ${book.photo.id}}"  class="img-fluid rounded shadow-sm" alt="Foto Autore"
 											onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'" />
                     <h5 class="card-title" th:text="${book.title}">Titolo libro</h5>
-                    <p class="card-text" th:text="${book.description}">Descrizione breve...</p>
+                    
                 </div>
                 <div class="card-footer text-center">
                     <a th:href="@{'/book/' + ${book.id}}" class="btn btn-outline-primary">Dettagli</a>
@@ -50,7 +50,7 @@
 <!-- AUTHOR SUGGESTIONS -->
 <div class="container my-5">
     <h2 class="text-center mb-4">🧑‍🎨 Autori Consigliati</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-6 g-4">
         <div class="col" th:each="author : ${suggestedAuthors}">
             <div class="card h-100 shadow-sm">
                 <div class="card-body text-center">
