@@ -17,7 +17,7 @@ public class User {
 	@OneToMany(mappedBy = "reviewedByUser")
 	private List<Review> writtenReviews;
 	
-	@OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Photo photo;
 	
 	

@@ -14,7 +14,7 @@ public class Photo {
     private byte[] data;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = true)
+    @JoinColumn(name = "author_id")
     private Author author;
 
     @ManyToOne
@@ -22,7 +22,7 @@ public class Photo {
     private Book book;
     
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true) 
+    @JoinColumn(name = "user_id") 
     private User user;
 
 	public Long getId() {

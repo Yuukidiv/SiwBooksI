@@ -16,9 +16,9 @@
 		<div th:if="${user}">
 			<div class="row">
 				<div class="col-md-4 text-center">
-					
-				    <img class="img-fluid rounded shadow-sm"
-				         th:src="${user.photo != null} ? @{'/photo/' + ${user.photo.id}} : @{/images/defaultProfile.jpg}" />
+
+					<img class="img-fluid rounded shadow-sm"
+						th:src="${user.photo != null} ? @{'/photo/' + ${user.photo.id}} : @{/images/defaultProfile.jpg}" />
 				</div>
 				<div class="col-md-8">
 					<h1 class="mb-3" th:text="'Profilo utente: ' + ${credentials.username}">Profilo utente</h1>
@@ -42,6 +42,47 @@
 			<div th:unless="${user}" class="alert alert-warning text-center mt-4">
 				Utente non trovato.
 			</div>
+			<hr class="my-5">
+
+			<div class="mt-5">
+				<h2 class="mb-4">Recensioni Scritte</h2>
+
+				<div th:if="${#lists.isEmpty(reviews)}">
+					<p class="text-muted">Non hai ancora scritto nessuna recensione.</p>
+				</div>
+
+				<div class="row row-cols-1 row-cols-md-2 g-4" th:if="${!#lists.isEmpty(reviews)}">
+					<div class="col" th:each="review : ${reviews}">
+						<div class="card h-100 shadow-sm">
+							<div class="row g-0">
+								<div class="col-md-4">
+									<img th:src="${review.reviewedBook.photo != null} ? @{/photo/{id}(id=${review.reviewedBook.photo.id})} : @{/images/defaultBook.jpg}"
+										class="img-fluid rounded-start" alt="Copertina libro" />
+								</div>
+								<div class="col-md-8">
+									<div class="card-body">
+										<h5 class="card-title mb-1" th:text="${review.reviewedBook.title}">Titolo libro
+										</h5>
+										<h6 class="card-subtitle text-muted mb-2" th:text="${review.title}">Titolo
+											recensione</h6>
+
+										<!-- Stelline voto -->
+										<div class="mb-2">
+											<span th:each="i : ${#numbers.sequence(1, 5)}">
+												<i class="fa-star"
+													th:classappend="${i <= review.vote} ? 'fas text-warning' : 'far text-muted'"></i>
+											</span>
+										</div>
+
+										<p class="card-text" th:text="${review.text}">Testo della recensione</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 
 		</div>
 

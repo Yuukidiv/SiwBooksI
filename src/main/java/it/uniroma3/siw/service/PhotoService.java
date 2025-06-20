@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import it.uniroma3.siw.model.Photo;
 import it.uniroma3.siw.repository.PhotoRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class PhotoService {
@@ -15,6 +16,7 @@ public class PhotoService {
     private PhotoRepository photoRepository;
 
 	// provo per ora con gli autori magari
+	@Transactional
     public void savePhoto(Photo photo) {
         photoRepository.save(photo);
     }

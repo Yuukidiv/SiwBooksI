@@ -13,7 +13,7 @@
 	<div class="container mt-5">
 		<div class="row justify-content-center">
 			<div class="col-md-6">
-				<form th:action="@{/profile/editProfile}" method="post" th:object="${user}"
+				<form th:action="@{/profile/editProfile}" method="post" enctype="multipart/form-data" th:object="${user}"
 					class="p-4 border rounded shadow-sm bg-light">
 					<h2 class="text-center mb-4">Modifica Profilo</h2>
 
@@ -31,7 +31,10 @@
 						<label class="form-label">Email:</label>
 						<input type="text" class="form-control" th:field="*{email}">
 					</div>
-
+					<div class="mb-3">
+						<label for="file" class="form-label">Modifica Immagine Profilo:</label>
+						<input type="file" id ="photo" class="form-control" name="photoFile" accept="image/*" />
+					</div>
 					<!-- Hidden fields -->
 					<input type="hidden" th:field="*{id}" />
 					<input type="hidden" th:object="${credentials}" />

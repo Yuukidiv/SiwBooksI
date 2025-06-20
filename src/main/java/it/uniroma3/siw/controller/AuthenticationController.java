@@ -1,6 +1,8 @@
 package it.uniroma3.siw.controller;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
 import it.uniroma3.siw.service.CredentialsService;
+import it.uniroma3.siw.service.PhotoService;
 import it.uniroma3.siw.service.UserService;
 
 @Controller
@@ -45,6 +48,8 @@ public class AuthenticationController {
 	@Autowired
 	private BookService bookService;
 	
+	@Autowired
+	private PhotoService photoService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -140,6 +145,7 @@ public class AuthenticationController {
 	    User utente = credenziali.getUser();
 	    
 	    model.addAttribute("user", utente);
+	    model.addAttribute("reviews", utente.getWrittenReviews());
 	    model.addAttribute("credentials", credenziali);
 
 		return "profile.html";
@@ -160,8 +166,33 @@ public class AuthenticationController {
 		return "editProfile.html";
 	}
 	
+	@Transactional
 	@PostMapping("/profile/editProfile")
-	public String saveEditProfile(Model model, User user, Credentials credentials) {
+	public String saveEditProfile(@ModelAttribute("user") User user,
+		    @RequestParam("photoFile") MultipartFile photoFile,
+		    @ModelAttribute("credentials") Credentials credentials,
+		    Model model) throws IOException {
+		
+	    if (photoFile != null && !photoFile.isEmpty()) {
+	        // Se c'è una foto vecchia, la elimini
+	        Photo oldPhoto = user.getPhoto();
+	        if (oldPhoto != null) {
+	            user.setPhoto(null); // scollega la vecchia
+	            photoService.deletePhoto(oldPhoto);
+	        }
+
+	        // Salva il libro temporaneamente (per avere ID, stato managed, etc.)
+	        userService.saveUser(user);
+
+	        // Crea e salva nuova foto
+	        Photo newPhoto = new Photo();
+	        newPhoto.setData(photoFile.getBytes());
+	        newPhoto.setUser(user);
+	        photoService.savePhoto(newPhoto);
+
+	        // Aggiorna relazione bidirezionale
+	        user.setPhoto(newPhoto);
+	    }
 	    // Associa utente a credenziali
 	    credentials.setUser(user);
 	    this.userService.saveUser(user);
