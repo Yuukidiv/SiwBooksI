@@ -41,13 +41,14 @@
 					<a th:href="@{'/author/' + ${author.id} + '/books'}" class="btn btn-outline-primary mt-3">
 						Visualizza i libri dell'autore
 					</a>
+					<div sec:authorize="hasRole('ADMIN')">
 					<a th:href="@{'/admin/author/' + ${author.id} + '/edit'}" class="btn btn-outline-danger mt-3">
 						Modifica Autore
 					</a>
 					<a th:href="@{'/admin/deleteAuthor/' + ${author.id}}" class="btn btn-outline-danger mt-3">
 						Elimina Autore
 					</a>
-
+					</div>
 
 				</div>
 			</div>
