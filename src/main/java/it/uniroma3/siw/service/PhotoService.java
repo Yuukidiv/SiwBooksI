@@ -26,5 +26,10 @@ public class PhotoService {
 	public List<Photo> findAll(){
 		return (List<Photo>) this.photoRepository.findAll();
 	}
+
+	public void deletePhoto(Photo oldPhoto) {
+		this.photoRepository.delete(oldPhoto);
+		
+	}
     
 }

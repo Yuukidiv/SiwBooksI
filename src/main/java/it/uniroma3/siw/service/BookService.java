@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import it.uniroma3.siw.model.Book;
 import it.uniroma3.siw.repository.BookRepository;
+import jakarta.transaction.Transactional;
 
 
 @Service
@@ -23,7 +24,7 @@ public class BookService {
 	public Book getBookById(Long id) {
 		return bookRepository.findById(id).orElse(null);
 	}
-	
+	@Transactional
 	public void saveBook(Book book) {
 		this.bookRepository.save(book);
 	}

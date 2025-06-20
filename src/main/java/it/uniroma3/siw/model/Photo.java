@@ -18,7 +18,7 @@ public class Photo {
     private Author author;
 
     @ManyToOne
-    @JoinColumn(name = "book_id", nullable = true) 
+    @JoinColumn(name = "book_id") 
     private Book book;
     
     @ManyToOne

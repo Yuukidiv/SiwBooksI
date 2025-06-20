@@ -21,7 +21,7 @@ public class Book {
 	@OneToMany(mappedBy = "reviewedBook", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Review> reviews;
 	
-	@OneToOne(mappedBy = "book", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Photo photo;
 	
 	public Long getId() {

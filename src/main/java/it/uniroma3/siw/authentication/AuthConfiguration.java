@@ -75,6 +75,9 @@ public class AuthConfiguration {
                 .deleteCookies("JSESSIONID")
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .clearAuthentication(true).permitAll();
+        
+        
+        
         return httpSecurity.build();
     }
 }

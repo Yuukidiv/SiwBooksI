@@ -98,15 +98,52 @@ public class BookController {
 		return "editBook.html";
 	}
 
+	@Transactional
 	@PostMapping("/edited/book")
-	public String saveEditBook(Book book, Model model,  @RequestParam(name ="authorIds", required = false) List<Long> authorIds ) {
-		if (authorIds != null && !authorIds.isEmpty()) {
-	        List<Author> selectedAuthors = authorService.getAllById(authorIds);
-	        book.setAuthors(selectedAuthors);
+	public String saveEditBook(@RequestParam("id") Long id,
+	                           @RequestParam("title") String title,
+	                           @RequestParam("dateOfPublication") Integer date,
+	                           @RequestParam("description") String description,
+	                           @RequestParam(name = "authorIds", required = false) List<Long> authorIds,
+	                           @RequestParam(name = "photo", required = false) MultipartFile photoFile) throws IOException {
+
+	    Book book = bookService.getBookById(id);
+
+	    book.setTitle(title);
+	    book.setDateOfPublication(date);
+	    book.setDescription(description);
+
+	    if (authorIds != null && !authorIds.isEmpty()) {
+	        List<Author> authors = authorService.getAllById(authorIds);
+	        book.setAuthors(authors);
 	    }
-		this.bookService.saveBook(book);
-		return "redirect:/book/" + book.getId();
+
+	    if (photoFile != null && !photoFile.isEmpty()) {
+	        // Se c'è una foto vecchia, la elimini
+	        Photo oldPhoto = book.getPhoto();
+	        if (oldPhoto != null) {
+	            book.setPhoto(null); // scollega la vecchia
+	            photoService.deletePhoto(oldPhoto);
+	        }
+
+	        // Salva il libro temporaneamente (per avere ID, stato managed, etc.)
+	        bookService.saveBook(book);
+
+	        // Crea e salva nuova foto
+	        Photo newPhoto = new Photo();
+	        newPhoto.setData(photoFile.getBytes());
+	        newPhoto.setBook(book);
+	        photoService.savePhoto(newPhoto);
+
+	        // Aggiorna relazione bidirezionale
+	        book.setPhoto(newPhoto);
+	    }
+
+	    bookService.saveBook(book); // Save finale
+
+	    return "redirect:/book/" + book.getId();
 	}
+
 
 	@GetMapping("/admin/deleteBook/{id}")
 	public String deleteBook(Model model, @PathVariable Long id) {
