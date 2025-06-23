@@ -2,7 +2,9 @@ package it.uniroma3.siw.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import it.uniroma3.siw.controller.validator.BookValidator;
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.model.Book;
+import it.uniroma3.siw.model.Genre;
 import it.uniroma3.siw.model.Photo;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
@@ -38,6 +41,7 @@ public class BookController {
 	@GetMapping("/books")
 	public String getBooks(Model model) {
 		model.addAttribute("books", this.bookService.getAllBooks());
+		model.addAttribute("allGenres", Genre.values());
 		return "books.html";
 	}
 
@@ -109,6 +113,7 @@ public class BookController {
 	                           @RequestParam("dateOfPublication") Integer date,
 	                           @RequestParam("description") String description,
 	                           @RequestParam(name = "authorIds", required = false) List<Long> authorIds,
+	                           @RequestParam(name = "genres", required = false) Set<Genre> genres,
 	                           @RequestParam(name = "photo", required = false) MultipartFile photoFile) throws IOException {
 
 	    Book book = bookService.getBookById(id);
@@ -116,6 +121,7 @@ public class BookController {
 	    book.setTitle(title);
 	    book.setDateOfPublication(date);
 	    book.setDescription(description);
+	    book.setGenres(genres != null ? genres : new HashSet<>());
 
 	    List<Author> authors = (authorIds != null) ? authorService.getAllById(authorIds) : new ArrayList<>();
 	    book.setAuthors(authors);
@@ -157,13 +163,32 @@ public class BookController {
 
 	@GetMapping("/books/results") 
 	public String foundBooks(@RequestParam(required =
-			false) String title, @RequestParam(required = false) Integer dateOfPublication,  Model model) {
-		System.out.println("Titolo ricevuto: " + title);
-	    System.out.println("Anno di pubblicazione ricevuto: " + dateOfPublication);
-		model.addAttribute("books", this.bookService.searchBooks(title, dateOfPublication)); 
+			false) String title, @RequestParam(required = false) Integer dateOfPublication,
+			@RequestParam(required = false ) List<Genre> genres,
+			@RequestParam(required = false) String author,
+			Model model) {
+		model.addAttribute("books", this.bookService.searchBooks(title, dateOfPublication, genres)); 
+		
 		model.addAttribute("title", title);
-		// model.addAttribute("author", author);
+		
+		model.addAttribute("genres", genres);
+		model.addAttribute("allGenres", Genre.values());
+		model.addAttribute("author", author);
 		model.addAttribute("dateOfPublication", dateOfPublication);
-		return "books.html"; }
+		
+		return "books.html"; 
+		}
+	
+	
+	@GetMapping("/books/genre/{genre}")
+	public String booksByGenre(@PathVariable Genre genre, Model model) {
+	    List<Book> books = bookService.findBooksByGenre(genre);
+	    model.addAttribute("books", books);
+	    model.addAttribute("allGenres", Genre.values());
+	    model.addAttribute("genre", genre);
+	    return "books.html";
+	}
 
 }
+
+

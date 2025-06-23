@@ -43,5 +43,10 @@ public class AuthorService {
 		 Collections.shuffle(allAuthors);
 		 return allAuthors.stream().limit(count).collect(Collectors.toList());
 	}
+	
+	
+	public List<Author> searchAuthors(String name, String surname) {
+		return this.authorRepository.searchAuthors(name, surname);
+	}
 
 }

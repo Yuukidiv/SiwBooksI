@@ -32,10 +32,22 @@
 
 <body>
 	<nav th:replace="fragments/base.html :: navbar"></nav>
-	<div class="container mt-5">
-
 		<!-- Titolo e barra di ricerca -->
 		<h1 class="text-center mb-4">Authors</h1>
+		<div class="container mt-5">
+			<form th:action="@{/authors/search}" method="get" class="mb-4">
+				    <div class="row g-2">
+				        <div class="col-md-4">
+				            <input type="text" name="name" th:value="${name}" class="form-control" placeholder="Nome autore">
+				        </div>
+				        <div class="col-md-4">
+				            <input type="text" name="surname" th:value="${surname}" class="form-control" placeholder="Cognome autore">
+				        </div>
+				        <div class="col-md-2">
+				            <button type="submit" class="btn btn-primary w-100">Cerca</button>
+				        </div>
+				    </div>
+				</form>
 		<!-- Messaggio se non ci sono libri -->
 		<div th:if="${authors.isEmpty()}" class="alert alert-warning text-center">
 			Non ci sono autori nel sistema
@@ -46,8 +58,8 @@
 			<div class="col" th:each="author : ${authors}">
 				<div class="card  shadow-sm card-hover">
 					<a th:href="@{'/author/' + ${author.id}}" class="card-link">
-						<img th:src="@{'/photo/' + ${author.photo.id}}" class="card-img-top book-img" alt="Foto Autore"
-							onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'" />
+						<img th:src="${author.photo != null} ? @{'/photo/' + ${author.photo.id}} : @{/images/defaultProfile.jpg}"
+							class="card-img-top book-img" alt="Foto Autore" />
 						<div class="card-body d-flex flex-column">
 							<h5 class="card-title mb-1" th:text="${author.name + ' ' + author.surname}">Name Author</h5>
 						</div>

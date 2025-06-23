@@ -193,4 +193,21 @@ public class AuthorController {
 	}
 	
 	
+	
+	@GetMapping("/authors/search")
+	public String searchAuthors(
+	        @RequestParam(required = false) String name,
+	        @RequestParam(required = false) String surname,
+	        Model model) {
+	    
+	    List<Author> authors = authorService.searchAuthors(name, surname);
+	    model.addAttribute("authors", authors);
+	    model.addAttribute("name", name);
+	    model.addAttribute("surname", surname);
+	    
+	    return "authors.html"; 
+	}
+	
+	
+	
 }

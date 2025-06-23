@@ -1,6 +1,8 @@
 package it.uniroma3.siw.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.*;
 
@@ -23,6 +25,12 @@ public class Book {
 	
 	@OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Photo photo;
+	
+	@ElementCollection(targetClass = Genre.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "book_genres", joinColumns = @JoinColumn(name = "book_id"))
+    @Column(name = "genre")
+    private Set<Genre> genres = new HashSet<>();
 	
 	public Long getId() {
 		return id;
@@ -78,6 +86,14 @@ public class Book {
 
 	public void setPhoto(Photo photo) {
 		this.photo = photo;
+	}
+
+	public Set<Genre> getGenres() {
+		return genres;
+	}
+
+	public void setGenres(Set<Genre> genres) {
+		this.genres = genres;
 	}
 
 

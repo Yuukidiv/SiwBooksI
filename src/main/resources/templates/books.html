@@ -42,11 +42,21 @@
 				<div class="col-md-3">
 					<input type="text" name="title" th:value="${title}" class="form-control" placeholder="Titolo">
 				</div>
-				<div class="col-md-3">
-					<input type="text" name="author" class="form-control" placeholder="Autore">
-				</div>
 				<div class="col-md-2">
 					<input type="number" name="dateOfPublication"  th:value="${dateOfPublication}" class="form-control" placeholder="Anno">
+				</div>
+				<div class="mb-3">
+				  <label class="form-label fw-bold">Generi:</label>
+				  <div class="d-flex flex-wrap gap-2">
+				    <div th:each="genre : ${allGenres}" class="form-check">
+				      <input class="form-check-input" type="checkbox" 
+				             name="genres" 
+				             th:id="'genre-' + ${genre}" 
+				             th:value="${genre}" 
+				             th:checked="${genres != null} ? ${genres.contains(genre)} : false" />
+				      <label class="form-check-label" th:for="'genre-' + ${genre}" th:text="${genre}"></label>
+				    </div>
+				  </div>
 				</div>
 				<div class="col-md-2">
 					<button type="submit" class="btn btn-primary w-100">Cerca</button>

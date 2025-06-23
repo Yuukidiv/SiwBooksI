@@ -15,7 +15,7 @@
 			<div class="row">
 				<!-- Foto autore -->
 				<div class="col-md-4 text-center">
-					<img th:src="@{'/photo/' + ${photo.id}}" class="card-img-top book-img" alt="Foto Autore"
+					<img th:src="${author.photo != null} ? @{'/photo/' + ${author.photo.id}} : @{/images/defaultProfile.jpg}" alt="Foto Autore"
 						onerror="this.src='https://via.placeholder.com/150x220?text=No+Image'" />
 				</div>
 

@@ -26,6 +26,15 @@
 				<div class="col-md-8">
 					<h1 th:text="${book.title}" class="mb-3">Titolo del libro</h1>
 					<p><strong>Anno di pubblicazione:</strong> <span th:text="${book.dateOfPublication}">2000</span></p>
+					<p>
+					  <strong>Generi:</strong>
+					  <span th:each="genre : ${book.genres}">
+					    <a th:href="@{'/books/genre/' + ${genre}}" 
+					       th:text="${genre}" 
+					       class="badge bg-primary me-1 text-decoration-none">
+					    </a>
+					  </span>
+					</p>
 					<p><strong>Descrizione:</strong></p>
 					<p th:text="${book.description}">Nessuna descrizione disponibile.</p>
 					<div class="mt-4">

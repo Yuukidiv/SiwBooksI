@@ -51,9 +51,9 @@ public class AuthConfiguration {
                 .authorizeHttpRequests()
 //                .requestMatchers("/**").permitAll()
                 // chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
-                .requestMatchers(HttpMethod.GET,"/","/homepage","/register","/css/**", "/images/**", "books/**", "authors", "book/**", "author/**", "photo/**").permitAll()
+                .requestMatchers(HttpMethod.GET,"/","/homepage","/register","/css/**", "/images/**", "books/**", "authors/**", "book/**", "author/**", "photo/**").permitAll()
         		// chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
-                .requestMatchers(HttpMethod.POST,"/register", "/login").permitAll()
+                .requestMatchers(HttpMethod.POST,"/register", "/login", "/").permitAll()
                 .requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.POST,"/admin/**").hasAnyAuthority("ROLE_ADMIN")
         		// tutti gli utenti autenticati possono accere alle pagine rimanenti 

@@ -64,6 +64,13 @@
 				<label for="file" class="form-label">Immagine (copertina)</label>
 				<input type="file" id="photo" name="photo" accept="image/*" class="form-control" />
 			</div>
+			<div class="mb-3">
+				<label for="genres">Generi</label>
+				<select th:field="*{genres}" multiple class="form-select">
+					<option th:each="g : ${T(it.uniroma3.siw.model.Genre).values()}" th:value="${g}" th:text="${g}">
+						GENRE</option>
+				</select>
+			</div>
 			<!--parte nuova prova -->
 			<div class="row">
 				<div class="col-md-6">

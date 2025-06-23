@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import it.uniroma3.siw.model.Book;
+import it.uniroma3.siw.model.Genre;
 import it.uniroma3.siw.repository.BookRepository;
 import jakarta.transaction.Transactional;
 
@@ -40,9 +41,8 @@ public class BookService {
 		return (List<Book>) this.bookRepository.findAllById(id);
 	}
 	
-	public List<Book> searchBooks(String book, Integer dateOfPublication) {
-		System.out.printf("d: title='%s', year=%s\n", book, dateOfPublication);
-		return  (List<Book>) bookRepository.searchBooks(book, dateOfPublication);
+	public List<Book> searchBooks(String book, Integer dateOfPublication, List<Genre> genres) {
+		return  (List<Book>) bookRepository.searchBooks(book, dateOfPublication, genres);
 	}
 
 	public boolean existsByTitleAndDateOfPublication(String title, Integer dateOfPublication) {
@@ -54,6 +54,11 @@ public class BookService {
 	    Collections.shuffle(allBooks);
 	    return allBooks.stream().limit(count).collect(Collectors.toList());
 	}
+
+	public List<Book> findBooksByGenre(Genre genre) {
+	    return bookRepository.findByGenresContaining(genre);
+	}
+
 	
 	
 }
