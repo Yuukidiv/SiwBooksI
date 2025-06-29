@@ -26,6 +26,8 @@ import it.uniroma3.siw.model.Credentials;
 import it.uniroma3.siw.model.Photo;
 import it.uniroma3.siw.model.User;
 import it.uniroma3.siw.model.Book;
+import it.uniroma3.siw.controller.validator.CredentialsValidator;
+import it.uniroma3.siw.controller.validator.UserValidator;
 import it.uniroma3.siw.model.Author;
 import it.uniroma3.siw.service.AuthorService;
 import it.uniroma3.siw.service.BookService;
@@ -56,6 +58,12 @@ public class AuthenticationController {
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private CredentialsValidator credentialsValidator;
+	
+	@Autowired
+	private UserValidator userValidator;
 	
 	@GetMapping(value = "/register") 
 	public String showRegisterForm (Model model) {
@@ -118,8 +126,17 @@ public class AuthenticationController {
                  @ModelAttribute("credentials") Credentials credentials,
                  BindingResult credentialsBindingResult,
                  Model model, @RequestParam("confirmPassword") String psw) {
+		
+		userValidator.validate(user, userBindingResult);
+		credentialsValidator.validate(credentials, credentialsBindingResult);
+
+		if (userBindingResult.hasErrors() || credentialsBindingResult.hasErrors()) {
+		    return "formRegisterUser";
+		}
+		
+		
 		if(!credentials.getPassword().equals(psw)) {
-			model.addAttribute("passwordError", "Password non coincidono");
+			model.addAttribute("passwordError", "Passwords non coincidono");
 			 return "formRegisterUser";
 		}
 
@@ -168,11 +185,17 @@ public class AuthenticationController {
 	
 	@Transactional
 	@PostMapping("/profile/editProfile")
-	public String saveEditProfile(@ModelAttribute("user") User user,
+	public String saveEditProfile(@ModelAttribute("user") User user, BindingResult userBindingResult,
 	                              @ModelAttribute("credentials") Credentials credentials,
 	                              @RequestParam(name = "photoFile", required = false) MultipartFile photoFile,
 	                              Model model) throws IOException {
 	    credentials.setUser(user);
+	    
+	    userValidator.validate(user, userBindingResult);
+	    
+	    if (userBindingResult.hasErrors()) {
+	    	return "editProfile";
+	    }
 
 	    // Recupera lo user esistente (per non perdere la foto)
 	    User existingUser = userService.getUser(user.getId());
@@ -225,12 +248,22 @@ public class AuthenticationController {
 	    User user = credenziali.getUser();
 	    
 	    if (!passwordEncoder.matches(oldPsw, credenziali.getPassword())) {
-	    	model.addAttribute("msgError", "Password inserita errata");
+	    	model.addAttribute("msgError", "Wrong Password");
 	    	return "editPsw.html";
 	    }
 	    
+	    if(newPsw.length()<5) {
+	    	model.addAttribute("msgError", "La Password deve avere una lunghezza minima di 5.");
+	    	return "editPsw";
+	    }
+	    
+	    if (oldPsw.equals(newPsw)) {
+	    	model.addAttribute("msgError", "La nuova password deve essere diversa da quella vecchia.");
+	    	return "editPsw";
+	    }
+	    
 	    if (!newPsw.equals(confirmPsw))  {
-	    	model.addAttribute("msgError", "Password inserite diverse");
+	    	model.addAttribute("msgError", "Le password non sono uguali.");
 	
 	    	return "editPsw.html";
 	    }

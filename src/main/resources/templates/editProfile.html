@@ -18,16 +18,19 @@
 					<h2 class="text-center mb-4">Modifica Profilo</h2>
 
 					<div class="mb-3">
+						<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></p>
 						<label class="form-label">Nome:</label>
 						<input type="text" class="form-control" th:field="*{name}">
 					</div>
 
 					<div class="mb-3">
+						<p th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}" class="error-message"></p>
 						<label class="form-label">Cognome:</label>
 						<input type="text" class="form-control" th:field="*{surname}">
 					</div>
 
 					<div class="mb-3">
+						<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-message"></p>
 						<label class="form-label">Email:</label>
 						<input type="text" class="form-control" th:field="*{email}">
 					</div>

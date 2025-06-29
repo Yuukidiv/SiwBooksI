@@ -1,0 +1,23 @@
+.book-img {}
+
+		.card-title {
+			font-size: 1rem;
+			font-weight: bold;
+		}
+		a.card-link {
+		    text-decoration: none;
+		    color: inherit;
+		  }
+
+		.card-text {
+			font-size: 0.9rem;
+		}
+		
+		.card-hover {
+		  transition: transform 0.3s ease, box-shadow 0.3s ease;
+		}
+
+		.card-hover:hover {
+		  transform: scale(1.05);
+		  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+		}
