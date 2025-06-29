@@ -37,7 +37,7 @@
 	<!--<div><a href="/"><img src="/logo-siw.png" width="50%" /></a></div>-->
 	<nav th:replace="fragments/base.html :: navbar"></nav>
 	<br>
-	<h1 th:text="'Books Selection of ' + ${author.name} + ' ' + ${author.surname}">Lista Libri dell'autore</h1>
+	<h1 th:text="'Lista libri di: ' + ${author.name} + ' ' + ${author.surname}">Lista Libri dell'autore</h1>
 	<div th:if="${books.isEmpty()}" class="alert alert-warning text-center">
 		Non ci sono libri nel sistema
 	</div>
