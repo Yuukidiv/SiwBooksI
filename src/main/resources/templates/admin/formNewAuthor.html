@@ -60,11 +60,13 @@
 			</div>
 
 			<div class="mb-3">
+				<p th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="text-danger small"></p>
 				<label class="form-label">Data di nascita</label>
 				<input type="date" class="form-control" th:field="*{dateOfBirth}" required />
 			</div>
 
 			<div class="mb-3">
+				<p th:if="${#fields.hasErrors('dateOfDeath')}" th:errors="*{dateOfDeath}" class="text-danger small"></p>
 				<label class="form-label">Data di morte (facoltativa)</label>
 				<input type="date" class="form-control" th:field="*{dateOfDeath}" />
 			</div>

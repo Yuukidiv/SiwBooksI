@@ -50,6 +50,7 @@
 			</div>
 
 			<div class="mb-3">
+				<p th:if="${#fields.hasErrors('dateOfPublication')}" th:errors="*{dateOfPublication}" class="text-danger small"></p>
 				<label class="form-label">Anno di pubblicazione</label>
 				<input type="number" th:field="*{dateOfPublication}" class="form-control" required />
 			</div>

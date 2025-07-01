@@ -96,6 +96,7 @@ public class AuthorController {
 		bindingResult.getAllErrors().forEach(err -> System.out.println(">>> " + err));
 	    authorValidator.validate(author, bindingResult);
 	    if (bindingResult.hasErrors()) {
+	    	model.addAttribute("books", bookService.getAllBooks());
 	        model.addAttribute("error", "Errore nella validazione autore");
 	        return "admin/formNewAuthor.html";
 	    }

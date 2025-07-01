@@ -33,7 +33,7 @@ public class BookController {
 	private BookService bookService;
 	@Autowired
 	private AuthorService authorService;
-	@Autowired 
+	@Autowired
 	private PhotoService photoService;
 	@Autowired
 	private BookValidator bookValidator;
@@ -68,90 +68,89 @@ public class BookController {
 
 	// SAVING BOOK
 	@PostMapping("/book")
-	public String saveBook(Model model, Book book, BindingResult bindingResult, @RequestParam("photo") MultipartFile photo,
-			@RequestParam(name ="authorIds", required = false) List<Long> authorIds) throws IOException {
-		
+	public String saveBook(Model model, Book book, BindingResult bindingResult,
+			@RequestParam("photo") MultipartFile photo,
+			@RequestParam(name = "authorIds", required = false) List<Long> authorIds) throws IOException {
+
 		if (authorIds != null && !authorIds.isEmpty()) {
-	        List<Author> selectedAuthors = authorService.getAllById(authorIds);
-	        book.setAuthors(selectedAuthors);
-	    }
-		
-		this.bookValidator.validate(book, bindingResult);
-		if (book!=null) {
-			this.bookService.saveBook(book); 
-			Photo bookPhoto = new Photo();
-            bookPhoto.setData(photo.getBytes());
-            bookPhoto.setBook(book);
-            this.photoService.savePhoto(bookPhoto);
-			model.addAttribute("book", book);
-			return "redirect:book/"+book.getId();
-		} else {
-			model.addAttribute("error", "The book already exists in the system");
-			return "admin/formNewBook.html"; 
+			List<Author> selectedAuthors = authorService.getAllById(authorIds);
+			book.setAuthors(selectedAuthors);
 		}
-		
+
+		this.bookValidator.validate(book, bindingResult);
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("error", "The book already exists in the system");
+			model.addAttribute("authors", this.authorService.getAllAuthors());
+			return "admin/formNewBook.html";
+		} else {
+			this.bookService.saveBook(book);
+			Photo bookPhoto = new Photo();
+			bookPhoto.setData(photo.getBytes());
+			bookPhoto.setBook(book);
+			this.photoService.savePhoto(bookPhoto);
+			model.addAttribute("book", book);
+			return "redirect:book/" + book.getId();
+		}
+
 	}
 
 	@GetMapping("/admin/edit/book/{id}")
 	public String editBook(Model model, @PathVariable Long id) {
 		Book book = bookService.getBookById(id);
-	    List<Author> allAuthors = authorService.getAllAuthors();
-	    List<Author> selectedAuthors = book.getAuthors();
-	    List<Author> availableAuthors = new ArrayList<>(allAuthors);
-	    availableAuthors.removeAll(selectedAuthors);
+		List<Author> allAuthors = authorService.getAllAuthors();
+		List<Author> selectedAuthors = book.getAuthors();
+		List<Author> availableAuthors = new ArrayList<>(allAuthors);
+		availableAuthors.removeAll(selectedAuthors);
 
-	    model.addAttribute("book", book);
-	    model.addAttribute("selectedAuthors", selectedAuthors);
-	    model.addAttribute("availableAuthors", availableAuthors);
+		model.addAttribute("book", book);
+		model.addAttribute("selectedAuthors", selectedAuthors);
+		model.addAttribute("availableAuthors", availableAuthors);
 		return "editBook.html";
 	}
 
 	@Transactional
 	@PostMapping("/edited/book")
-	public String saveEditBook(@RequestParam("id") Long id,
-	                           @RequestParam("title") String title,
-	                           @RequestParam("dateOfPublication") Integer date,
-	                           @RequestParam("description") String description,
-	                           @RequestParam(name = "authorIds", required = false) List<Long> authorIds,
-	                           @RequestParam(name = "genres", required = false) Set<Genre> genres,
-	                           @RequestParam(name = "photo", required = false) MultipartFile photoFile) throws IOException {
+	public String saveEditBook(@RequestParam("id") Long id, @RequestParam("title") String title,
+			@RequestParam("dateOfPublication") Integer date, @RequestParam("description") String description,
+			@RequestParam(name = "authorIds", required = false) List<Long> authorIds,
+			@RequestParam(name = "genres", required = false) Set<Genre> genres,
+			@RequestParam(name = "photo", required = false) MultipartFile photoFile) throws IOException {
 
-	    Book book = bookService.getBookById(id);
+		Book book = bookService.getBookById(id);
 
-	    book.setTitle(title);
-	    book.setDateOfPublication(date);
-	    book.setDescription(description);
-	    book.setGenres(genres != null ? genres : new HashSet<>());
+		book.setTitle(title);
+		book.setDateOfPublication(date);
+		book.setDescription(description);
+		book.setGenres(genres != null ? genres : new HashSet<>());
 
-	    List<Author> authors = (authorIds != null) ? authorService.getAllById(authorIds) : new ArrayList<>();
-	    book.setAuthors(authors);
+		List<Author> authors = (authorIds != null) ? authorService.getAllById(authorIds) : new ArrayList<>();
+		book.setAuthors(authors);
 
-	    if (photoFile != null && !photoFile.isEmpty()) {
-	        // Se c'è una foto vecchia, la elimini
-	        Photo oldPhoto = book.getPhoto();
-	        if (oldPhoto != null) {
-	            book.setPhoto(null); // scollega la vecchia
-	            photoService.deletePhoto(oldPhoto);
-	        }
+		if (photoFile != null && !photoFile.isEmpty()) {
+			// Se c'è una foto vecchia, la elimini
+			Photo oldPhoto = book.getPhoto();
+			if (oldPhoto != null) {
+				book.setPhoto(null); // scollega la vecchia
+				photoService.deletePhoto(oldPhoto);
+			}
 
-	        // Salva il libro temporaneamente (per avere ID, stato managed, etc.)
-	        bookService.saveBook(book);
+			// Salva il libro temporaneamente (per avere ID, stato managed, etc.)
+			bookService.saveBook(book);
 
-	        // Crea e salva nuova foto
-	        Photo newPhoto = new Photo();
-	        newPhoto.setData(photoFile.getBytes());
-	        newPhoto.setBook(book);
-	        photoService.savePhoto(newPhoto);
+			// Crea e salva nuova foto
+			Photo newPhoto = new Photo();
+			newPhoto.setData(photoFile.getBytes());
+			newPhoto.setBook(book);
+			photoService.savePhoto(newPhoto);
 
-	        // Aggiorna relazione bidirezionale
-	        book.setPhoto(newPhoto);
-	    }
+			// Aggiorna relazione bidirezionale
+			book.setPhoto(newPhoto);
+		}
 
-	    bookService.saveBook(book); // Save finale
+		bookService.saveBook(book); // Save finale
 
-	    return "redirect:/book/" + book.getId();
+		return "redirect:/book/" + book.getId();
 	}
-
 
 	@GetMapping("/admin/deleteBook/{id}")
 	public String deleteBook(Model model, @PathVariable Long id) {
@@ -160,35 +159,30 @@ public class BookController {
 		return "redirect:/books";
 	}
 
-
-	@GetMapping("/books/results") 
-	public String foundBooks(@RequestParam(required =
-			false) String title, @RequestParam(required = false) Integer dateOfPublication,
-			@RequestParam(required = false ) List<Genre> genres,
-			@RequestParam(required = false) String author,
+	@GetMapping("/books/results")
+	public String foundBooks(@RequestParam(required = false) String title,
+			@RequestParam(required = false) Integer dateOfPublication,
+			@RequestParam(required = false) List<Genre> genres, @RequestParam(required = false) String author,
 			Model model) {
-		model.addAttribute("books", this.bookService.searchBooks(title, dateOfPublication, genres)); 
-		
+		model.addAttribute("books", this.bookService.searchBooks(title, dateOfPublication, genres));
+
 		model.addAttribute("title", title);
-		
+
 		model.addAttribute("genres", genres);
 		model.addAttribute("allGenres", Genre.values());
 		model.addAttribute("author", author);
 		model.addAttribute("dateOfPublication", dateOfPublication);
-		
-		return "books.html"; 
-		}
-	
-	
+
+		return "books.html";
+	}
+
 	@GetMapping("/books/genre/{genre}")
 	public String booksByGenre(@PathVariable Genre genre, Model model) {
-	    List<Book> books = bookService.findBooksByGenre(genre);
-	    model.addAttribute("books", books);
-	    model.addAttribute("allGenres", Genre.values());
-	    model.addAttribute("genre", genre);
-	    return "books.html";
+		List<Book> books = bookService.findBooksByGenre(genre);
+		model.addAttribute("books", books);
+		model.addAttribute("allGenres", Genre.values());
+		model.addAttribute("genre", genre);
+		return "books.html";
 	}
 
 }
-
-
