@@ -14,7 +14,12 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         User user = (User) o;
-
+        // trim sul nome e cognome
+        if (user.getName() != null)
+            user.setName(user.getName().trim());
+        if (user.getSurname() != null)
+            user.setSurname(user.getSurname().trim());
+        
         if (!user.getName().matches("[a-zA-ZàèéìòùÀÈÉÌÒÙ\\s'-]+")) {
             errors.rejectValue("name", "user.name.invalid", "Il nome deve contenere solo lettere.");
         }

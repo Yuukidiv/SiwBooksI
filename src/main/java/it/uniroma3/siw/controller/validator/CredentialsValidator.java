@@ -22,7 +22,13 @@ public class CredentialsValidator implements Validator {
 	 @Override
 	    public void validate(Object o, Errors errors) {
 	        Credentials credentials = (Credentials) o;
-
+	        
+	        String username = credentials.getUsername();
+	        if (username != null) {
+	            username = username.trim();
+	            credentials.setUsername(username); 
+	        }
+	        
 	        if (credentials.getPassword().length() < 5) {
 	            errors.rejectValue("password", "credentials.password.invalid", "Le password devono essere di lunghezza minima 5");
 	        }

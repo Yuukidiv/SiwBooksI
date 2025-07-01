@@ -1,23 +1,52 @@
 .book-img {}
 
-		.card-title {
-			font-size: 1rem;
-			font-weight: bold;
-		}
-		a.card-link {
-		    text-decoration: none;
-		    color: inherit;
-		  }
+.card-title {
+	font-size: 1rem;
+	font-weight: bold;
+}
 
-		.card-text {
-			font-size: 0.9rem;
-		}
-		
-		.card-hover {
-		  transition: transform 0.3s ease, box-shadow 0.3s ease;
-		}
+a.card-link {
+	text-decoration: none;
+	color: inherit;
+}
 
-		.card-hover:hover {
-		  transform: scale(1.05);
-		  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-		}
+.card-text {
+	font-size: 0.9rem;
+}
+
+.card-hover {
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+	transform: scale(1.05);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+
+.star-rating {
+	direction: rtl;
+	font-size: 2rem;
+	unicode-bidi: bidi-override;
+	display: inline-flex;
+}
+
+.star-rating input[type="radio"] {
+	display: none;
+}
+
+.star-rating label {
+	color: #ccc;
+	cursor: pointer;
+}
+
+.star-rating input[type="radio"]:checked~label,
+.star-rating label:hover,
+.star-rating label:hover~label {
+	color: gold;
+}
+
+.book-cover {
+	max-width: 100%;
+	border-radius: 0.5rem;
+}

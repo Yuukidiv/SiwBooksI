@@ -15,12 +15,12 @@
 
 			const button = bookDiv.querySelector("button");
 			if (fromListId === "availableBooks") {
-				button.innerText = "Remove";
+				button.innerText = "Rimuovi";
 				button.className = "btn btn-danger btn-sm";
 				button.onclick = () => moveBook(id, "selectedBooks", "availableBooks");
 				bookDiv.querySelector("input").disabled = false;
 			} else {
-				button.innerText = "Add";
+				button.innerText = "Aggiungi";
 				button.className = "btn btn-success btn-sm";
 				button.onclick = () => moveBook(id, "availableBooks", "selectedBooks");
 				bookDiv.querySelector("input").disabled = true;
@@ -39,38 +39,38 @@
 	<nav th:replace="fragments/base.html :: navbar"></nav>
 	<div class="container mt-5 mb-5" style="max-width: 800px;">
 		<div th:if="${error}" class="alert alert-danger" role="alert">
-			<span th:text="${error}">The author already exists in the system</span>
+			<span th:text="${error}">L'autore è stato precedemente inserito nel sistema</span>
 		</div>
-		<h1 class="mb-4">Add a new Author</h1>
+		<h1 class="mb-4">Aggiungi un nuovo Autore</h1>
 
 		<form th:action="@{/author}" method="POST" th:object="${author}" enctype="multipart/form-data" class="p-4 border rounded shadow-sm bg-light">
 			<div class="mb-3">
-				<label class="form-label">Name Author</label>
+				<label class="form-label">Nome</label>
 				<input type="text" class="form-control" th:field="*{name}" required />
 			</div>
 
 			<div class="mb-3">
-				<label class="form-label">Surname Author</label>
+				<label class="form-label">Cognome</label>
 				<input type="text" class="form-control" th:field="*{surname}" required />
 			</div>
 
 			<div class="mb-3">
-				<label class="form-label">Nationality</label>
+				<label class="form-label">Nazionalità</label>
 				<input type="text" class="form-control" th:field="*{nationality}" required />
 			</div>
 
 			<div class="mb-3">
-				<label class="form-label">Date of Birth</label>
+				<label class="form-label">Data di nascita</label>
 				<input type="date" class="form-control" th:field="*{dateOfBirth}" required />
 			</div>
 
 			<div class="mb-3">
-				<label class="form-label">Date of Death (optional)</label>
+				<label class="form-label">Data di morte (facoltativa)</label>
 				<input type="date" class="form-control" th:field="*{dateOfDeath}" />
 			</div>
 
 			<div class="mb-3">
-				<label class="form-label">Description</label>
+				<label class="form-label">Descrizione Autore</label>
 				<input type="text" class="form-control" th:field="*{description}" />
 			</div>
 
@@ -79,13 +79,13 @@
 			
 			<div class="row">
 				<div class="col-md-6">
-					<h5>Books Selected</h5>
+					<h5>Libri Selezionati</h5>
 					<div id="selectedBooks" class="border rounded p-3" style="min-height: 150px;">
 					</div>
 				</div>
 
 				<div class="col-md-6">
-					<h5>Available Books</h5>
+					<h5>Libri Disponibili</h5>
 					<div id="availableBooks" class="border rounded p-3">
 						<div th:each="book : ${books}" th:id="'book-' + ${book.id}"
 							class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
@@ -94,7 +94,7 @@
 								<input type="hidden" name="bookIds" th:value="${book.id}" disabled />
 								<button type="button" class="btn btn-success btn-sm"
 									th:onclick="'moveBook(' + ${book.id} + ', \'availableBooks\', \'selectedBooks\')'">
-									Add
+									Aggiungi
 								</button>
 							</div>
 						</div>
@@ -103,7 +103,7 @@
 			</div>
 
 			<div class="text-end">
-				<button type="submit" class="btn btn-primary">Confirm</button>
+				<button type="submit" class="btn btn-primary">Conferma</button>
 			</div>
 		</form>
 	</div>
