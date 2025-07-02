@@ -97,9 +97,10 @@ public class UserController {
 	@PostMapping("/profile/editProfile")
 	public String saveEditProfile(@ModelAttribute("user") User user, BindingResult userBindingResult,
 	                              @ModelAttribute("credentials") Credentials credentials,
-	                              @RequestParam(name = "photoFile", required = false) MultipartFile photoFile,
+	                              @RequestParam(name = "file", required = false) MultipartFile photoFile,
 	                              Model model) throws IOException {
-	    credentials.setUser(user);
+
+	    User existingUser = userService.getUser(user.getId());
 	    
 	    userValidator.validate(user, userBindingResult);
 	    
@@ -107,38 +108,28 @@ public class UserController {
 	    	return "editProfile";
 	    }
 
-	    // Recupera lo user esistente (per non perdere la foto)
-	    User existingUser = userService.getUser(user.getId());
+	    existingUser.setName(user.getName());
+	    existingUser.setSurname(user.getSurname());
+	    existingUser.setEmail(user.getEmail());
 
-	    // Mantieni la foto precedente se non ne è stata caricata una nuova
 	    if (photoFile != null && !photoFile.isEmpty()) {
-	        // Elimina la vecchia, se esiste
-	        Photo oldPhoto = existingUser.getPhoto();
-	        if (oldPhoto != null) {
-	            photoService.deletePhoto(oldPhoto);
+	        Photo photo = existingUser.getPhoto();
+	        if (photo == null) {
+	            photo = new Photo();
+	            photo.setUser(existingUser);
 	        }
-
-	        // Salva lo user temporaneamente per garantire uno stato managed
-	        userService.saveUser(user);
-
-	        // Crea e salva nuova foto
-	        Photo newPhoto = new Photo();
-	        newPhoto.setData(photoFile.getBytes());
-	        newPhoto.setUser(user);
-	        photoService.savePhoto(newPhoto);
-
-	        // Associa la nuova foto
-	        user.setPhoto(newPhoto);
-	    } else {
-	        // Nessuna nuova foto: mantieni la vecchia
-	        user.setPhoto(existingUser.getPhoto());
+	        photo.setData(photoFile.getBytes());
+	        existingUser.setPhoto(photo);
 	    }
 
-	    userService.saveUser(user);
-	    model.addAttribute("success", "Profilo aggiornato correttamente");
+	    userService.saveUser(existingUser);
 
+	    model.addAttribute("success", "Perfect, you have modified your profile!");
 	    return "redirect:/profile";
 	}
+	
+	
+	
 
 
 	

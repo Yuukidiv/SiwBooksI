@@ -69,7 +69,7 @@ public class BookController {
 	// SAVING BOOK
 	@PostMapping("/book")
 	public String saveBook(Model model, Book book, BindingResult bindingResult,
-			@RequestParam("photo") MultipartFile photo,
+			@RequestParam("file") MultipartFile photoFile,
 			@RequestParam(name = "authorIds", required = false) List<Long> authorIds) throws IOException {
 
 		if (authorIds != null && !authorIds.isEmpty()) {
@@ -79,13 +79,14 @@ public class BookController {
 
 		this.bookValidator.validate(book, bindingResult);
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("error", "The book already exists in the system");
+			model.addAttribute("error", "Error");
+			 bindingResult.getAllErrors().forEach(e -> System.out.println(">>> BINDING ERROR: " + e));
 			model.addAttribute("authors", this.authorService.getAllAuthors());
 			return "admin/formNewBook.html";
 		} else {
 			this.bookService.saveBook(book);
 			Photo bookPhoto = new Photo();
-			bookPhoto.setData(photo.getBytes());
+			bookPhoto.setData(photoFile.getBytes());
 			bookPhoto.setBook(book);
 			this.photoService.savePhoto(bookPhoto);
 			model.addAttribute("book", book);
@@ -108,48 +109,47 @@ public class BookController {
 		return "editBook.html";
 	}
 
-	@Transactional
 	@PostMapping("/edited/book")
-	public String saveEditBook(@RequestParam("id") Long id, @RequestParam("title") String title,
-			@RequestParam("dateOfPublication") Integer date, @RequestParam("description") String description,
-			@RequestParam(name = "authorIds", required = false) List<Long> authorIds,
-			@RequestParam(name = "genres", required = false) Set<Genre> genres,
-			@RequestParam(name = "photo", required = false) MultipartFile photoFile) throws IOException {
+	public String saveEditBook(@RequestParam("id") Long id,
+	                           @RequestParam("title") String title,
+	                           @RequestParam("dateOfPublication") Integer date,
+	                           @RequestParam("description") String description,
+	                           @RequestParam(name = "authorIds", required = false) List<Long> authorIds,
+	                           @RequestParam(name = "genres", required = false) Set<Genre> genres,
+	                           @RequestParam(name = "file", required = false) MultipartFile photoFile) throws IOException {
 
-		Book book = bookService.getBookById(id);
+	    Book book = bookService.getBookById(id);
 
-		book.setTitle(title);
-		book.setDateOfPublication(date);
-		book.setDescription(description);
-		book.setGenres(genres != null ? genres : new HashSet<>());
+	    book.setTitle(title);
+	    book.setDateOfPublication(date);
+	    book.setDescription(description);
+	    book.setGenres(genres != null ? genres : new HashSet<>());
 
-		List<Author> authors = (authorIds != null) ? authorService.getAllById(authorIds) : new ArrayList<>();
-		book.setAuthors(authors);
+	    List<Author> authors = (authorIds != null) ? authorService.getAllById(authorIds) : new ArrayList<>();
+	    book.setAuthors(authors);
 
-		if (photoFile != null && !photoFile.isEmpty()) {
-			// Se c'è una foto vecchia, la elimini
-			Photo oldPhoto = book.getPhoto();
-			if (oldPhoto != null) {
-				book.setPhoto(null); // scollega la vecchia
-				photoService.deletePhoto(oldPhoto);
-			}
+	    if (photoFile != null && !photoFile.isEmpty()) {
+	        // elimina vecchia foto se esiste
+	        Photo oldPhoto = book.getPhoto();
+	        if (oldPhoto != null) {
+	            book.setPhoto(null); // scollega
+	            photoService.deletePhoto(oldPhoto);
+	        }
+	        
+	        bookService.saveBook(book);
+	        // salva nuova foto
+	        Photo newPhoto = new Photo();
+	        newPhoto.setData(photoFile.getBytes());
+	        newPhoto.setBook(book);
+	        photoService.savePhoto(newPhoto);
 
-			// Salva il libro temporaneamente (per avere ID, stato managed, etc.)
-			bookService.saveBook(book);
+	        book.setPhoto(newPhoto);
+	        
+	    }
 
-			// Crea e salva nuova foto
-			Photo newPhoto = new Photo();
-			newPhoto.setData(photoFile.getBytes());
-			newPhoto.setBook(book);
-			photoService.savePhoto(newPhoto);
+	    bookService.saveBook(book);
 
-			// Aggiorna relazione bidirezionale
-			book.setPhoto(newPhoto);
-		}
-
-		bookService.saveBook(book); // Save finale
-
-		return "redirect:/book/" + book.getId();
+	    return "redirect:/book/" + book.getId();
 	}
 
 	@GetMapping("/admin/deleteBook/{id}")

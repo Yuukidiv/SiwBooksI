@@ -21,10 +21,6 @@ public class BookValidator implements Validator{
 		if (book.getTitle() != null)
 		    book.setTitle(book.getTitle().trim());
 		
-		if (book.getTitle()!=null && book.getDateOfPublication()!=null
-				&& bookService.existsByTitleAndDateOfPublication(book.getTitle(), book.getDateOfPublication())) {
-			errors.reject("book.duplicate");
-		}
 		
 		if (book.getDateOfPublication() != null) {
             int currentYear = java.time.Year.now().getValue();
